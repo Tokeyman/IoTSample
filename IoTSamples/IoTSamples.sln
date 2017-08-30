@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTSamples", "IoTSamples\IoTSamples.csproj", "{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLibrary.Device", "GLibrary.Device\GLibrary.Device.csproj", "{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|ARM.Build.0 = Debug|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|ARM.Deploy.0 = Debug|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x64.ActiveCfg = Debug|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x64.Build.0 = Debug|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x64.Deploy.0 = Debug|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x86.ActiveCfg = Debug|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x86.Build.0 = Debug|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Debug|x86.Deploy.0 = Debug|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|Any CPU.ActiveCfg = Release|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|ARM.ActiveCfg = Release|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|ARM.Build.0 = Release|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|ARM.Deploy.0 = Release|ARM
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x64.ActiveCfg = Release|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x64.Build.0 = Release|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x64.Deploy.0 = Release|x64
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x86.ActiveCfg = Release|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x86.Build.0 = Release|x86
+		{D95F4FF7-B39E-4EE8-9203-C200E9AA702E}.Release|x86.Deploy.0 = Release|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|ARM.ActiveCfg = Debug|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|ARM.Build.0 = Debug|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x64.ActiveCfg = Debug|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x64.Build.0 = Debug|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x86.ActiveCfg = Debug|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x86.Build.0 = Debug|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|ARM.ActiveCfg = Release|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|ARM.Build.0 = Release|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x64.ActiveCfg = Release|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x64.Build.0 = Release|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.ActiveCfg = Release|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6D515BA-F30E-48A9-A4F9-941AA339A7A0}
+	EndGlobalSection
+EndGlobal
