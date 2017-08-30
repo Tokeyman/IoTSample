@@ -22,9 +22,9 @@ Get or set debounce timeout
 public TimeSpan DebounceTimeout{ get; set; }
 ```
 
-## Contructors
+### Contructors
 
-### GPIO(int PinNumber)
+#### GPIO(int PinNumber)
 
 Create a new Gpio Pin with PinNumber
 
@@ -32,7 +32,7 @@ Create a new Gpio Pin with PinNumber
 public GPIO(int PinNumber)
 ```
 
-### GPIO(int PinNumber, GpioSharingMode SharingMode)
+#### GPIO(int PinNumber, GpioSharingMode SharingMode)
 
 Create a new Gpio Pin with PinNumber and Set GpioSharingMode
 
@@ -40,9 +40,9 @@ Create a new Gpio Pin with PinNumber and Set GpioSharingMode
 public GPIO(int PinNumber, GpioSharingMode SharingMode)
 ```
 
-## Methords
+### Methords
 
-### SetDriveMode(GpioPinDriveMode PinDriveMode)
+#### SetDriveMode(GpioPinDriveMode PinDriveMode)
 
 Set PinDriveMode, such as Input, Output, Input with pull-up and so on.
 
@@ -50,7 +50,7 @@ Set PinDriveMode, such as Input, Output, Input with pull-up and so on.
 public void SetDriveMode(GpioPinDriveMode PinDriveMode)
 ```
 
-### GetDriveMode()
+#### GetDriveMode()
 
 Get PinDriveMode value.
 
@@ -58,7 +58,7 @@ Get PinDriveMode value.
 public GpioPinDriveMode GetDriveMode()
 ```
 
-### Read()
+#### Read()
 
 Read pin value .
 
