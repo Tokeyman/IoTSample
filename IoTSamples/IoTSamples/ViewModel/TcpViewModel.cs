@@ -15,7 +15,7 @@ using Windows.Networking;
 
 namespace IoTSamples.ViewModel
 {
-    public class TcpViewModel:ViewModelBase
+    public class TcpViewModel : ViewModelBase
     {
         private INavigationService navigationService;
         public TcpViewModel(INavigationService navigationService)
@@ -79,12 +79,12 @@ namespace IoTSamples.ViewModel
 
         private void ClientConnect()
         {
-            if(ClientConnectButtonText=="Connect")
+            if (ClientConnectButtonText == "Connect")
             {
                 var remoteHost = new HostName(ClientRemoteIP);
                 var remotePort = Convert.ToInt32(ClientRemotePort);
 
-                if(string.IsNullOrWhiteSpace(ClientLocalIP))
+                if (string.IsNullOrWhiteSpace(ClientLocalIP))
                 {
                     Client = new TcpClient(remoteHost, remotePort);
                 }
@@ -112,7 +112,8 @@ namespace IoTSamples.ViewModel
         {
             var message = System.Text.Encoding.UTF8.GetString(args.ReceivedBuffer);
             message = args.RemoteHost.DisplayName + ":" + args.RemotePort + ":" + message + "\n";
-            DispatcherHelper.CheckBeginInvokeOnUI(() => {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
                 ClientReceivedMessage += message;
             });
         }
@@ -125,7 +126,7 @@ namespace IoTSamples.ViewModel
 
         private void ClientSend()
         {
-            if((Client!=null)&&(Client.IsRunning))
+            if ((Client != null) && (Client.IsRunning))
             {
                 var buffer = System.Text.Encoding.UTF8.GetBytes(ClientSendMessage);
                 Client.Send(buffer);
@@ -171,7 +172,7 @@ namespace IoTSamples.ViewModel
                 ClientList = new ObservableCollection<ComboBoxItem>();
                 Server.Listen();
                 ServerListenButtonText = "Stop";
-                
+
             }
             else
             {
@@ -186,8 +187,9 @@ namespace IoTSamples.ViewModel
         private void Server_DataReceived(TcpServer sender, TcpServerDataReceivedArgs args)
         {
             var message = System.Text.Encoding.UTF8.GetString(args.ReceivedBuffer);
-            message = args.RemoteHost.DisplayName + ":" + args.RemotePort + message + "\n";
-            DispatcherHelper.CheckBeginInvokeOnUI(() => {
+            message = args.RemoteHost.DisplayName + ":" + args.RemotePort + ":" + message + "\n";
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
                 this.ServerReceivedMessage += message;
             });
         }
@@ -237,7 +239,7 @@ namespace IoTSamples.ViewModel
                     var remoteHost = paras[0];
                     var remotePort = Convert.ToInt32(paras[1]);
                     var client = Server.ClientList.FirstOrDefault(f => f.RemoteHost.DisplayName == remoteHost && f.RemotePort == remotePort);
-                    if(client!=null)
+                    if (client != null)
                     {
                         Server.Send(buffer, client);
                     }

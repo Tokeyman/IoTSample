@@ -37,6 +37,7 @@ namespace GLibrary.Device.Net
         /// </summary>
         public int Port { get; private set; }
 
+        private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource(); 
         #endregion 属性
 
         #region 构造函数
@@ -104,9 +105,15 @@ namespace GLibrary.Device.Net
             }
 
             Socket.ConnectionReceived -= Listener_ConnectionReceived;
+            CancelRead();
             await Socket?.CancelIOAsync();
             Socket?.Dispose();
             Socket = null;
+        }
+
+        private void CancelRead()
+        {
+            CancellationTokenSource.Cancel();
         }
 
         public void Send(byte[] buffer, TcpClient Client)
@@ -163,7 +170,7 @@ namespace GLibrary.Device.Net
             {
                 while (IsRunning)
                 {
-                    UInt32 bytesRead = await dataReader.LoadAsync(ReadBufferLength);
+                    UInt32 bytesRead = await dataReader.LoadAsync(ReadBufferLength).AsTask(CancellationTokenSource.Token);
                     if (bytesRead > 0)
                     {
                         // Sencond way to read bytes from a stream buffer.
@@ -187,10 +194,15 @@ namespace GLibrary.Device.Net
                     }
                 }
             }
+            catch(TaskCanceledException tce)
+            {
+                //Task Cancelled
+                //Doing Nothing
+            }
             catch (Exception ex)
             {
                 var result = SocketError.GetStatus(ex.HResult);
-                if(result==SocketErrorStatus.ConnectionResetByPeer)
+                if(result==SocketErrorStatus.ConnectionResetByPeer)  //远程StreamSocket客户端断开连接
                 {
                     HostName remoteHost = args.Socket.Information.RemoteAddress;
                     int remotePort = Convert.ToInt32(args.Socket.Information.RemotePort);
@@ -212,7 +224,6 @@ namespace GLibrary.Device.Net
         }
 
         #endregion 事件处理
-
     }
 
 
