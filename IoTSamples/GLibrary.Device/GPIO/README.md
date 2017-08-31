@@ -2,7 +2,13 @@
 
 > General Purpose IO 
 
+
+
 ## GPIO Class
+
+### Remarks
+
+TODO How to use also typical order of operations
 
 ### Properties
 
@@ -65,6 +71,34 @@ Read pin value .
 ```c#
 public GpioPinValue Read()
 ```
+
+#### Write(GpioPinValue Value)
+
+Write PinValue to pin.
+
+```c#
+public void Write(GpioPinValue Value)
+```
+
+#### Dispose()
+
+Dispose the object
+
+```C#
+public override void Dispose()
+```
+
+### Events
+
+#### PinValueChanged
+
+An event that indicates that pin value has changed on the pin
+
+```c#
+public event TypedEventHandler<GPIO, GpioPinValueChangedEventArgs> PinValueChanged;
+```
+
+
 
 
 
