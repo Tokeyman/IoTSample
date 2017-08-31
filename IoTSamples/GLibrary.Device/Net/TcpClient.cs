@@ -144,6 +144,15 @@ namespace GLibrary.Device.Net
                     while (IsRunning)
                     {
                         UInt32 bytesRead = await DataReader.LoadAsync(ReadBufferLength).AsTask(CancellationTokenSource.Token);
+                        //Another solution on StackOverflow.com. But not test
+                        //IAsyncOperation<uint> taskLoad = DataReader.LoadAsync(ReadBufferLength);
+                        //taskLoad.AsTask().Wait();
+                        //bytesRead = taskLoad.GetResults();
+                        /////////////////////////////////////////////
+                        var iar = DataReader.LoadAsync(1023).AsTask();
+                        iar.Wait();
+                        
+                       
                         if (bytesRead > 0)
                         {
                             byte[] buffer = new byte[bytesRead];

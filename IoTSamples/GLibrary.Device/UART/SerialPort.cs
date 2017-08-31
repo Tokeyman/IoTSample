@@ -19,12 +19,55 @@ namespace GLibrary.Device.UART
         private DataReader DataReader { get; set; }
 
         private CancellationTokenSource ReadCancellationToken { get; set; }
+
+        public string Selector { get; private set; }
+        public int BaudRate { get; private set; }
+
         #endregion
 
         #region 构造函数
         public SerialPort(string Selector, int BaudRate)
         {
-            GetSerialPort(Selector);
+            this.Selector = Selector;
+            this.BaudRate = BaudRate;
+        }
+
+        public async Task GetSerialPort(string Selector)
+        {
+            string AdvancedQuerySyntax = SerialDevice.GetDeviceSelector(Selector);
+            var DeviceInformationCollection = await DeviceInformation.FindAllAsync(AdvancedQuerySyntax);
+            DeviceInformation Entry = DeviceInformationCollection[0];
+            this.SerialDevice = await SerialDevice.FromIdAsync(Entry.Id);
+            if (SerialDevice == null) throw new NullReferenceException();
+        }
+
+        /// <summary>
+        /// 获得所有可用的串口号
+        /// </summary>
+        /// <returns>串口号</returns>
+        public static async Task<List<string>> GetPortNames()
+        {
+            string aqs = SerialDevice.GetDeviceSelector();
+            var dis = await DeviceInformation.FindAllAsync(aqs);
+            List<string> portNames = new List<string>();
+            foreach (var item in dis)
+            {
+                var serialDevice = await SerialDevice.FromIdAsync(item.Id);
+                if (serialDevice != null)
+                {
+                    portNames.Add(serialDevice.PortName);
+                }
+            }
+            portNames.Sort();
+            return portNames;
+        }
+
+        #endregion 构造函数
+
+        #region 方法
+        public async void Open()
+        {
+            await GetSerialPort(Selector);
             if (SerialDevice != null)
             {
                 this.SerialDevice.BaudRate = Convert.ToUInt32(BaudRate);
@@ -35,24 +78,6 @@ namespace GLibrary.Device.UART
                 this.SerialDevice.DataBits = 8;
                 this.SerialDevice.Handshake = SerialHandshake.None;
             }
-
-        }
-
-        public async void GetSerialPort(string Selector)
-        {
-            string AdvancedQuerySyntax = SerialDevice.GetDeviceSelector(Selector);
-            var DeviceInformationCollection = await DeviceInformation.FindAllAsync(AdvancedQuerySyntax);
-            DeviceInformation Entry = DeviceInformationCollection[0];
-            this.SerialDevice = await SerialDevice.FromIdAsync(Entry.Id);
-            if (SerialDevice == null) throw new NullReferenceException();
-        }
-
-
-        #endregion 构造函数
-
-        #region 方法
-        public void Open()
-        {
             // Create cancellation token object to close I/O operations when closing the device
             this.ReadCancellationToken = new CancellationTokenSource();
             Listen();

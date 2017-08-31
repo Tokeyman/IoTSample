@@ -30,6 +30,7 @@ namespace IoTSamples.ViewModel
             OpenCommand = new RelayCommand(Open);
             ClearCommand = new RelayCommand(Clear);
             SendCommand = new RelayCommand(Send);
+
         }
         #region Navigation Button
         public ICommand ShowMain { get; set; }
@@ -105,5 +106,6 @@ namespace IoTSamples.ViewModel
                 sp.Send(buffer);
             }
         }
+
     }
 }

@@ -120,14 +120,14 @@
                     <StackPanel Grid.Column="0">
                         <Grid>
                             <TextBlock Text="Defalut Selector:" VerticalAlignment="Center"/>
-                            <TextBox Text="UART0" Margin="120,5,250,5"  VerticalContentAlignment="Center"/>
+                            <TextBox Text="{x:Bind Model.SelectorText,Mode=TwoWay}" Margin="120,5,250,5"  VerticalContentAlignment="Center"/>
                             <Button Content="{x:Bind Model.OpenButtonText,Mode=OneWay}" Command="{x:Bind Model.OpenCommand}" Margin="250,5,130,5"/>
                         </Grid>
                         <Grid>
                             <TextBlock Text="Received Message:" VerticalAlignment="Center"/>
                         </Grid>
                         <Grid>
-                            <TextBox Height="100" Text="{x:Bind Model.ReceiveMessage,Mode=OneWay}"/>
+                            <TextBox Height="100" Text="{x:Bind Model.ReceiveMessage,Mode=OneWay}" AcceptsReturn="True" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </Grid>
                         <Grid>
                             <Button Content="Clear" Command="{x:Bind Model.ClearCommand}" Margin="0,5,5,5" HorizontalAlignment="Right"/>

@@ -131,8 +131,6 @@ namespace GLibrary.Device.GPIO
 
         #endregion 事件
 
-        
-
         #region 私有方法
         private void Pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
