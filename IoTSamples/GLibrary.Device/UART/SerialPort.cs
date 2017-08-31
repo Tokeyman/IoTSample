@@ -32,7 +32,7 @@ namespace GLibrary.Device.UART
             this.BaudRate = BaudRate;
         }
 
-        public async Task GetSerialPort(string Selector)
+        private async Task GetSerialPort(string Selector)
         {
             string AdvancedQuerySyntax = SerialDevice.GetDeviceSelector(Selector);
             var DeviceInformationCollection = await DeviceInformation.FindAllAsync(AdvancedQuerySyntax);

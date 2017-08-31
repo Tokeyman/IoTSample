@@ -8,7 +8,14 @@
 
 ### Remarks
 
-TODO How to use also typical order of operations
+Typical order of operations
+
+- Use GPIO(int PinNumber) or GPIO(int PinNumber,GpioSharingMode SharingMode) Initialize GPIO
+- (Optional) set DebounceTimeOut if the pin will work under input mode.
+- Set pin drive mode by methord SetDriveMode(GpioPinDriveMode PinDriveMode). Call GetDriveMode() returns actural PinDriveMode.
+- Read() or Write(GpioPinValue Value) to read or set the voltage on pin.
+- PinValueChanged event will raised if set.
+- Dispose() will dispose the object.
 
 ### Properties
 
