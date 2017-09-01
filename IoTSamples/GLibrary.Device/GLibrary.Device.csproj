@@ -109,6 +109,7 @@
     <Compile Include="CommonBase.cs" />
     <Compile Include="GPIO\GPIO.cs" />
     <Compile Include="Introduction.cs" />
+    <Compile Include="Net\HttpClient.cs" />
     <Compile Include="Net\TcpClient.cs" />
     <Compile Include="Net\TcpServer.cs" />
     <Compile Include="Net\UdpClient.cs" />
