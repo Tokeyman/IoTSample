@@ -114,7 +114,8 @@
                 <Grid Grid.Row="0" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.25*"/>
-                        <ColumnDefinition Width="0.75*"/>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
@@ -143,6 +144,37 @@
                         </Grid>
 
                     </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <Grid>
+                            <TextBlock Text="Uri:" VerticalAlignment="Center"/>
+                           
+                        </Grid>
+                        <Grid>
+                            <TextBox Text="{x:Bind Model.Uri,Mode=TwoWay}" Margin="0,5,150,5"  VerticalContentAlignment="Center"/>
+                            <Button Content="{x:Bind Model.SocketButtonText,Mode=OneWay}" Command="{x:Bind Model.SocketOpenCommand}" Margin="350,5,5,5"/>
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Received Message:" VerticalAlignment="Center"/>
+                        </Grid>
+                        <Grid>
+                            <TextBox Height="100" Text="{x:Bind Model.SocketReceivedMessage,Mode=OneWay}" AcceptsReturn="True" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
+                        <Grid>
+                            <Button Content="Clear" Command="{x:Bind Model.SocketClearCommand}" Margin="0,5,5,5" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Send Message:" VerticalAlignment="Center"/>
+                        </Grid>
+                        <Grid>
+                            <TextBox Height="100" Text="{x:Bind Model.SocketSendMessage,Mode=TwoWay}"/>
+                        </Grid>
+                        <Grid>
+                            <Button Content="Send" Command="{x:Bind Model.SocketSendCommand}" Margin="0,5,5,5" HorizontalAlignment="Right"/>
+                        </Grid>
+
+                    </StackPanel>
+
                 </Grid>
             </Grid>
         </ScrollViewer>
