@@ -50,6 +50,23 @@ namespace GLibrary.Windows.Net
             }
         }
 
+        /// <summary>
+        /// UDP服务端
+        /// </summary>
+        /// <param name="Port">本地端口</param>
+        public UdpServer(int Port)
+        {
+            this.LocalAddress = null;
+            this.Port = Port;
+            try
+            {
+                udp = new System.Net.Sockets.UdpClient(this.Port);
+            }
+            catch (Exception ex)
+            {
+                RaiseOnException(this, ex);
+            }
+        }
         #endregion
 
         #region 方法

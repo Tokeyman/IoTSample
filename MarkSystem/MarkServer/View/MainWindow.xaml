@@ -24,16 +24,23 @@
         <TextBox HorizontalAlignment="Left" Height="72" Margin="24,271,0,0" TextWrapping="Wrap" Text="{Binding ClientSendMessage,Mode=TwoWay}" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         <Button Content="Send" HorizontalAlignment="Left" Margin="208,348,0,0" VerticalAlignment="Top" Width="75" Command="{Binding ClientSendCommand}" />
         <TextBlock HorizontalAlignment="Left" Margin="355,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Local "/><Run Text="IP："/></TextBlock>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="424,45,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="559,45,0,0" TextWrapping="Wrap" Text="21680" VerticalAlignment="Top" Width="55"/>
-        <Button Content="Listen" HorizontalAlignment="Left" Margin="539,73,0,0" VerticalAlignment="Top" Width="75" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="424,45,0,0" TextWrapping="Wrap" Text="{Binding ServerLocalIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="559,45,0,0" TextWrapping="Wrap" Text="{Binding ServerLocalPort,Mode=TwoWay}" VerticalAlignment="Top" Width="55"/>
+        <Button Content="{Binding ServerListenButtonText}" Command="{Binding ServerListenCommand}" HorizontalAlignment="Left" Margin="539,73,0,0" VerticalAlignment="Top" Width="75" />
         <TextBlock HorizontalAlignment="Left" Margin="355,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="ReceivedMessage"/>
-        <TextBox HorizontalAlignment="Left" Height="72" Margin="355,146,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-        <Button Content="Clear" HorizontalAlignment="Left" Margin="539,223,0,0" VerticalAlignment="Top" Width="75" />
+        <TextBox HorizontalAlignment="Left" Height="72" Margin="355,146,0,0" TextWrapping="Wrap" Text="{Binding ServerReceivedMessage}" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <Button Content="Clear" Command="{Binding ServerClearCommand}" HorizontalAlignment="Left" Margin="539,223,0,0" VerticalAlignment="Top" Width="75" />
         <TextBlock HorizontalAlignment="Left" Margin="355,251,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="SendMessage"/>
-        <TextBox HorizontalAlignment="Left" Height="72" Margin="355,271,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-        <Button Content="Send" HorizontalAlignment="Left" Margin="539,348,0,0" VerticalAlignment="Top" Width="75" />
-        <TextBlock HorizontalAlignment="Left" Margin="24,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Udp Transmitting"/>
+        <TextBox HorizontalAlignment="Left" Height="72" Margin="355,271,0,0" TextWrapping="Wrap" Text="{Binding ServerSendMessage}" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <Button Content="Send" Command="{Binding ServerSendCommand}" HorizontalAlignment="Left" Margin="539,348,0,0" VerticalAlignment="Top" Width="75" />
+        <TextBlock HorizontalAlignment="Left" Margin="24,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Udp"/><Run Text=" Transmitting"/></TextBlock>
+        <ComboBox 
+            ItemsSource="{Binding ClientList}"
+            SelectedValue="{Binding SelectedValue,Mode=TwoWay}"
+            SelectedValuePath="Value"
+            DisplayMemberPath="Text"
+            HorizontalAlignment="Left" Margin="424,100,0,0" VerticalAlignment="Top" Width="189"/>
+        <TextBlock HorizontalAlignment="Left" Margin="355,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Clients"/><Run Text="："/></TextBlock>
 
     </Grid>
 </Window>
