@@ -33,7 +33,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="355,251,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="SendMessage"/>
         <TextBox HorizontalAlignment="Left" Height="72" Margin="355,271,0,0" TextWrapping="Wrap" Text="{Binding ServerSendMessage}" VerticalAlignment="Top" Width="259" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         <Button Content="Send" Command="{Binding ServerSendCommand}" HorizontalAlignment="Left" Margin="539,348,0,0" VerticalAlignment="Top" Width="75" />
-        <TextBlock HorizontalAlignment="Left" Margin="24,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Udp"/><Run Text=" Transmitting"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="24,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Socket"/><Run Text=" Transmitting"/></TextBlock>
         <ComboBox 
             ItemsSource="{Binding ClientList}"
             SelectedValue="{Binding SelectedValue,Mode=TwoWay}"

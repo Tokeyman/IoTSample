@@ -1,0 +1,31 @@
+﻿<Window x:Class="MarkServer.View.MarkServerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MarkServer.View"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator},Path=Mark}"
+        Title="MarkServer" Height="375" Width="540.518">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.33*"/>
+            <ColumnDefinition Width="0.33*"/>
+            <ColumnDefinition Width="0.33*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <DataGrid
+                ItemsSource="{Binding ClientList}">
+            </DataGrid>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <ListBox ItemsSource="{Binding ConnectedList}">
+            </ListBox>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2">
+            <TextBox Text="{Binding ReceivedCommand}" TextWrapping="Wrap" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+    </Grid>
+</Window>

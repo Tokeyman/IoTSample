@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkServer", "MarkServer\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLibrary.Windows", "GLibrary.Windows\GLibrary.Windows.csproj", "{C8B65D9C-7F35-4A5B-91FE-D5A21589E9A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel\DataModel.csproj", "{F4D76418-6445-424F-88CD-4B460BF2AADF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClientTest", "ConsoleClientTest\ConsoleClientTest.csproj", "{B705CC40-F867-41B5-976F-C6721D9EA84E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C8B65D9C-7F35-4A5B-91FE-D5A21589E9A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8B65D9C-7F35-4A5B-91FE-D5A21589E9A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8B65D9C-7F35-4A5B-91FE-D5A21589E9A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4D76418-6445-424F-88CD-4B460BF2AADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4D76418-6445-424F-88CD-4B460BF2AADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4D76418-6445-424F-88CD-4B460BF2AADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4D76418-6445-424F-88CD-4B460BF2AADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B705CC40-F867-41B5-976F-C6721D9EA84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B705CC40-F867-41B5-976F-C6721D9EA84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B705CC40-F867-41B5-976F-C6721D9EA84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B705CC40-F867-41B5-976F-C6721D9EA84E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

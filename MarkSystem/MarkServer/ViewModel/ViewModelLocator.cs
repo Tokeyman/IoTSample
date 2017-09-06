@@ -14,7 +14,9 @@
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
+using System.Windows.Navigation;
 
 namespace MarkServer.ViewModel
 {
@@ -43,6 +45,7 @@ namespace MarkServer.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<MarkServerViewModel>();
         }
 
         public MainViewModel Main
@@ -52,6 +55,9 @@ namespace MarkServer.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
+
+        public MarkServerViewModel Mark => ServiceLocator.Current.GetInstance<MarkServerViewModel>();
+
         
         public static void Cleanup()
         {

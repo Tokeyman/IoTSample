@@ -69,6 +69,15 @@ namespace GLibrary.Windows.Net
             this.RemotePort = RemotePort;
         }
 
+        public TcpClient(IPAddress RemoteAddress, int RemotePort)
+        {
+            this.LocalAddress = null;
+            this.LocalPort = 0;
+            this.RemoteAddress = RemoteAddress;
+            this.RemotePort = RemotePort;
+
+        }
+
 
         #endregion
 
@@ -80,8 +89,15 @@ namespace GLibrary.Windows.Net
         {
             try
             {
-                IPEndPoint localEP = new IPEndPoint(LocalAddress, LocalPort);
-                tcpClient = new System.Net.Sockets.TcpClient(localEP);
+                if (LocalAddress != null)
+                {
+                    IPEndPoint localEP = new IPEndPoint(LocalAddress, LocalPort);
+                    tcpClient = new System.Net.Sockets.TcpClient(localEP);
+                }
+                else
+                {
+                    tcpClient = new System.Net.Sockets.TcpClient();
+                }
                 tcpClient.ReceiveTimeout = ReceiveTimeOut;
                 tcpClient.BeginConnect(RemoteAddress, RemotePort, new AsyncCallback(ConnectedCallBack), tcpClient);
             }
@@ -110,7 +126,7 @@ namespace GLibrary.Windows.Net
             }
             catch (Exception ex)
             {
-                RaiseOnException(this,ex);
+                RaiseOnException(this, ex);
             }
         }
 
@@ -177,8 +193,8 @@ namespace GLibrary.Windows.Net
             {
                 byte[] buffer = new byte[NumOfBytesRead];
                 Array.Copy(dataState.ReceivedBuffer, 0, buffer, 0, NumOfBytesRead);
-               // TcpClientState state = new TcpClientState(dataState.Client, NumOfBytesRead, dataState.ReceivedBuffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
-               // RaiseDataReceived(state);
+                // TcpClientState state = new TcpClientState(dataState.Client, NumOfBytesRead, dataState.ReceivedBuffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
+                // RaiseDataReceived(state);
                 RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, dataState.ReceivedBuffer);
                 ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(AsyncReadCallBack), dataState);
             }
