@@ -27,10 +27,10 @@ namespace MarkServer.ViewModel
         public string ReceivedCommand { get { return _ReceivedCommand; } set { Set(ref _ReceivedCommand, value); } }
 
 
-        private TcpServer Server;
+        private TcpServer Socket;
         private WorkFlowModel workFlow;
 
-        private ServerModel MessageServer;
+        private ServerModel Server;
         public MarkServerViewModel()
         {
             if (IsInDesignMode)
@@ -39,7 +39,7 @@ namespace MarkServer.ViewModel
             }
             else
             {
-                MessageServer = new ServerModel();
+                Server = new ServerModel();
 
                 workFlow = new WorkFlowModel();
                 workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x10, 0xfe });
@@ -57,11 +57,11 @@ namespace MarkServer.ViewModel
 
         private void Listen()
         {
-            Server = new TcpServer(21890);
-            Server.ClientConnected += Server_ClientConnected;
-            Server.ClientDisconnected += Server_ClientDisconnected;
-            Server.DataReceived += Server_DataReceived;
-            Server.Start();
+            Socket = new TcpServer(21890);
+            Socket.ClientConnected += Server_ClientConnected;
+            Socket.ClientDisconnected += Server_ClientDisconnected;
+            Socket.DataReceived += Server_DataReceived;
+            Socket.Start();
 
         }
 
@@ -92,14 +92,13 @@ namespace MarkServer.ViewModel
                 }
                 else if (model.Command == "Pull") //Pull Request 获取工作程序
                 {
-                    var json = JsonConvert.SerializeObject(MessageServer.Update(workFlow));
+                    var json = JsonConvert.SerializeObject(Server.Update(workFlow));
 
-                   
-                    var c = Server.ClientList.FirstOrDefault(f => f.RemoteAddress == e.RemoteHost && f.RemotePort == e.RemotePort);
+                    var c = Socket.ClientList.FirstOrDefault(f => f.RemoteAddress == e.RemoteHost && f.RemotePort == e.RemotePort);
                     if(c!=null)
                     {
                         var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-                        Server.Send(buffer, c);
+                        Socket.Send(buffer, c);
                     }
                 }
             });

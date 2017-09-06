@@ -84,65 +84,29 @@ namespace DataModel.MessageModel
         }
     }
 
-    public class ServerModel
+    public class ClientStatus
     {
-        private string Guid;
-        private string ClientName;
+        public const string Idle = "Idle";
+        public const string Suspend = "Suspend";
+        public const string Running = "Runnning";
+    }
 
-        public ServerModel()
+    public class PushDataModel
+    {
+        public string ClientStatus { get; set; }
+        public string RxdData { get; set; }
+
+        public PushDataModel() { }
+        public PushDataModel(string ClientStatus,string RxdData)
         {
-            this.Guid = "0000";
-            this.ClientName = "Server" + Guid;
+            this.ClientStatus = ClientStatus;
+            this.RxdData = RxdData;
         }
 
-        public MessageModel Start()
+        public PushDataModel(string ClientStatus,byte[] buffer)
         {
-            var model = new MessageModel()
-            {
-                Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Start",
-                Data = ""
-            };
-            return model;
-        }
-
-        public MessageModel Pause()
-        {
-            var model = new MessageModel()
-            {
-                Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Pause",
-                Data = ""
-            };
-            return model;
-        }
-
-        public MessageModel Stop()
-        {
-            var model = new MessageModel()
-            {
-                Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Stop",
-                Data = ""
-            };
-            return model;
-        }
-
-        public MessageModel Update(WorkFlowModel workFlow)
-        {
-            MessageWorkFlowModel messageFlow = workFlow.ToMessage();
-            string json = JsonConvert.SerializeObject(messageFlow);
-            var model = new MessageModel()
-            {
-                Guid = this.Guid,
-                ClientName=this.ClientName,
-                Command="Update",
-                Data=json
-            };
-            return model;
+            this.ClientStatus = ClientStatus;
+            this.RxdData = System.Text.Encoding.UTF8.GetString(buffer);
         }
     }
 }
