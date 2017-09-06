@@ -28,7 +28,9 @@ namespace MarkServer.ViewModel
 
 
         private TcpServer Server;
+        private WorkFlowModel workFlow;
 
+        private ServerModel MessageServer;
         public MarkServerViewModel()
         {
             if (IsInDesignMode)
@@ -37,6 +39,18 @@ namespace MarkServer.ViewModel
             }
             else
             {
+                MessageServer = new ServerModel();
+
+                workFlow = new WorkFlowModel();
+                workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x10, 0xfe });
+                workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x11, 0xfe });
+                workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x12, 0xfe });
+                workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x13, 0xfe });
+
+                workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x30, 0xfe });
+                workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x31, 0xfe });
+
+
                 Listen();
             }
         }
@@ -57,7 +71,7 @@ namespace MarkServer.ViewModel
             var clientPort = e.RemotePort.ToString();
             var client = clientIp + ":" + clientPort;
 
-
+           
             var message = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
 
             var model = JsonConvert.DeserializeObject<MessageModel>(message);
@@ -78,7 +92,15 @@ namespace MarkServer.ViewModel
                 }
                 else if (model.Command == "Pull") //Pull Request 获取工作程序
                 {
+                    var json = JsonConvert.SerializeObject(MessageServer.Update(workFlow));
 
+                   
+                    var c = Server.ClientList.FirstOrDefault(f => f.RemoteAddress == e.RemoteHost && f.RemotePort == e.RemotePort);
+                    if(c!=null)
+                    {
+                        var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+                        Server.Send(buffer, c);
+                    }
                 }
             });
 

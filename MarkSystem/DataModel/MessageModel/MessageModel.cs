@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataModel.MessageModel
 {
+    /// <summary>
+    /// 通信消息实体类
+    /// </summary>
     public class MessageModel
     {
         /// <summary>
@@ -28,5 +31,61 @@ namespace DataModel.MessageModel
         /// 数据Json
         /// </summary>
         public string Data { get; set; }
+
+    }
+
+
+    internal class MessageWorkFlowModel
+    {
+        public List<MessageFlowModel> TimingCommand { get; set; }
+        public List<MessageFlowModel> RepeatCommand { get; set; }
+
+        public MessageWorkFlowModel()
+        {
+            this.TimingCommand = new List<MessageFlowModel>();
+            this.RepeatCommand = new List<MessageFlowModel>();
+        }
+
+        internal WorkFlowModel ToModel()
+        {
+            WorkFlowModel model = new WorkFlowModel();
+            foreach (var item in TimingCommand)
+            {
+                model.TimingCommand.Add(item.ToModel());
+            }
+
+            foreach (var item in RepeatCommand)
+            {
+                model.RepeatCommand.Add(item.ToModel());
+            }
+            return model;
+        }
+    }
+
+    /// <summary>
+    /// 用作数据传输
+    /// </summary>
+    internal class MessageFlowModel
+    {
+        public string Index { get; set; }
+        public string TimeSpan { get; set; }
+        public string Command { get; set; }
+
+        public MessageFlowModel() { }
+        public MessageFlowModel(string Index, string TimeSpan, string Command)
+        {
+            this.Index = Index;
+            this.TimeSpan = TimeSpan;
+            this.Command = Command;
+        }
+
+        internal FlowModel ToModel()
+        {
+            FlowModel model = new FlowModel();
+            model.Index = Convert.ToInt32(this.Index);
+            model.TimeSpan = System.TimeSpan.Parse(this.TimeSpan);
+            model.Command = System.Text.Encoding.UTF8.GetBytes(Command);
+            return model;
+        }
     }
 }

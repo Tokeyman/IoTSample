@@ -100,7 +100,7 @@ namespace GLibrary.Windows.Net
                         }
                         ClientList.Clear();
                     }
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -117,6 +117,35 @@ namespace GLibrary.Windows.Net
         public void Send(byte[] Buffer, TcpClient Client)
         {
             Client.Send(Buffer);
+        }
+
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="Buffer">待发送的数据</param>
+        /// <param name="iPEndPoint">目标节点</param>
+        public void Send(byte[] Buffer, IPEndPoint iPEndPoint)
+        {
+            var c = ClientList.FirstOrDefault(f => f.RemoteAddress == iPEndPoint.Address && f.RemotePort == iPEndPoint.Port);
+            if (c != null)
+            {
+                Send(Buffer, c);
+            }
+        }
+
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="Buffer">待发送的数据</param>
+        /// <param name="RemoteIp">目标IP</param>
+        /// <param name="RemotePort">目标端口</param>
+        public void Send(byte[] Buffer, IPAddress RemoteIp, int RemotePort)
+        {
+            var c = ClientList.FirstOrDefault(f => f.RemoteAddress == RemoteIp && f.RemotePort == RemotePort);
+            if (c != null)
+            {
+                Send(Buffer, c);
+            }
         }
         #endregion
 

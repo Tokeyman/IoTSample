@@ -12,6 +12,7 @@ namespace ConsoleClientTest
 {
     class Program
     {
+        private static ClientModel MessageClient;
         static void Main(string[] args)
         {
             IPAddress.TryParse("127.0.0.1", out IPAddress remoteHost);
@@ -24,32 +25,54 @@ namespace ConsoleClientTest
 
             string cmd = Console.ReadLine();
 
-            while (cmd != "c")
+            MessageClient = new ClientModel("0001");
+
+            while (cmd != "quit")
             {
-                MessageModel model = new MessageModel()
+                if (cmd == "Register")
                 {
-                    Guid = "0001",
-                    ClientName = "Client0001",
-                    Command = "Register",
-                    Data = ""
-                };
+                    var json = JsonConvert.SerializeObject(MessageClient.Register());
 
-                var json = JsonConvert.SerializeObject(model);
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
 
-                var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+                    Client.Send(buffer);
+                }
+                else if (cmd == "Pull")
+                {
 
-                Client.Send(buffer);
+                    var json = JsonConvert.SerializeObject(MessageClient.Pull());
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+
+                    Client.Send(buffer);
+                }
+                else if(cmd=="Push")
+                {
+                    MessageClient.Push("Go");
+                }
+                else
+                {
+                    Console.WriteLine("Input Again");
+                }
                 cmd = Console.ReadLine();
             }
+
+
             Client.Dispose();
-            
         }
 
         private static void Client_DataReceived(object sender, TcpClientDataReceivedArgs e)
         {
-            //throw new NotImplementedException();
             var message = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
-            Console.WriteLine("Data Received:" + message);
+            //Console.WriteLine("Data Received:" + message);
+
+            var messageFlow = JsonConvert.DeserializeObject<MessageModel>(message);
+            if(messageFlow.Command=="Update")
+            {
+                MessageClient.Update(messageFlow);
+            }
+           
+            Console.WriteLine("TimingCommand Count:" + MessageClient.WorkFlow.TimingCommand.Count.ToString());
+            Console.WriteLine("RepeatCommand Count:" + MessageClient.WorkFlow.RepeatCommand.Count.ToString());
         }
     }
 
