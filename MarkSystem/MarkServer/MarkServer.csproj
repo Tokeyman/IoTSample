@@ -125,9 +125,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataModel\DataModel.csproj">
-      <Project>{f4d76418-6445-424f-88cd-4b460bf2aadf}</Project>
-      <Name>DataModel</Name>
+    <ProjectReference Include="..\DataModelStandard\DataModelStandard.csproj">
+      <Project>{68868491-d48a-43a2-bf51-5a99b5295fe6}</Project>
+      <Name>DataModelStandard</Name>
     </ProjectReference>
     <ProjectReference Include="..\GLibrary.Windows\GLibrary.Windows.csproj">
       <Project>{c8b65d9c-7f35-4a5b-91fe-d5a21589e9a3}</Project>

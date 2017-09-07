@@ -1,0 +1,21 @@
+﻿<Page
+    x:Class="MarkClient.View.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MarkClient.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <Binding Path="Main" Source="{StaticResource Locator}"/>
+    </Page.DataContext>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="{x:Bind Model.Copyright}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Model.Github}" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <TextBlock Text="{x:Bind Model.Power}"/>
+        </StackPanel>
+    </Grid>
+</Page>
