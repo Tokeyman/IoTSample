@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataModel.MessageModel
+namespace DataModelStandard.MessageModel
 {
     public class WorkFlowModel
     {
@@ -91,7 +91,7 @@ namespace DataModel.MessageModel
             MessageFlowModel model = new MessageFlowModel();
             model.Index = this.Index.ToString();
             model.TimeSpan = this.TimeSpan.ToString();
-            model.Command = System.Text.Encoding.UTF8.GetString(this.Command);
+            model.Command = Transform.BytesToString(this.Command);
             return model;
         }
     }

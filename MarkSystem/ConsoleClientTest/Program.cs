@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GLibrary.Windows.Net;
 using System.Net;
-using DataModel.MessageModel;
+using DataModelStandard.MessageModel;
 using Newtonsoft.Json;
 
 namespace ConsoleClientTest
@@ -13,39 +13,43 @@ namespace ConsoleClientTest
     class Program
     {
         private static ClientModel Client;
+        private static TcpClient Socket;
         static void Main(string[] args)
         {
             IPAddress.TryParse("127.0.0.1", out IPAddress remoteHost);
 
-            TcpClient Socket = new TcpClient(remoteHost, 21890);
+            Socket = new TcpClient(remoteHost, 21890);
 
-            Socket.DataReceived += Client_DataReceived;
+            Socket.DataReceived += Socket_DataReceived;
 
             Socket.Connect();
 
             string cmd = Console.ReadLine();
 
             Client = new ClientModel("0001");
+            Client.SocketSend += Client_SocketSend;
+            Client.UartSend += Client_UartSend;
+
+
 
             while (cmd != "quit")
             {
-                if (cmd == "Register")
+                if (cmd == "Go")
                 {
-                    var json = JsonConvert.SerializeObject(Client.Register());
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-                    Socket.Send(buffer);
+                    Client.Go();
                 }
-                else if (cmd == "Pull")
+                else if (cmd == "Start")
                 {
 
-                    var json = JsonConvert.SerializeObject(Client.Pull());
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-
-                    Socket.Send(buffer);
+                    Client.Start();
                 }
-                else if(cmd=="Push")
+                else if (cmd == "Pause")
                 {
-                    Client.Push("Go");
+                    Client.Pause();
+                }
+                else if(cmd=="Stop")
+                {
+                    Client.Stop();
                 }
                 else
                 {
@@ -58,19 +62,37 @@ namespace ConsoleClientTest
             Socket.Dispose();
         }
 
-        private static void Client_DataReceived(object sender, TcpClientDataReceivedArgs e)
+        private static void Client_UartSend(object sender, UartSendArgs e)
+        {
+            // throw new NotImplementedException();
+            var str = "";
+            for (int i = 0; i < e.Buffer.Length; i++)
+            {
+                str += e.Buffer[i].ToString("X2") + " ";
+            }
+
+            Console.WriteLine("SEND TO UART:" + str);
+        }
+
+        private static void Client_SocketSend(object sender, SocketSendArgs e)
+        {
+            var message = JsonConvert.SerializeObject(e.MessageModel);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(message);
+            Socket.Send(buffer);
+        }
+
+        private static void Socket_DataReceived(object sender, TcpClientDataReceivedArgs e)
         {
             var message = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
             //Console.WriteLine("Data Received:" + message);
 
             var messageFlow = JsonConvert.DeserializeObject<MessageModel>(message);
-            if(messageFlow.Command=="Update")
+            if (messageFlow.Command == "Update")
             {
                 Client.Update(messageFlow);
+                Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());
+                Console.WriteLine("RepeatCommand Count:" + Client.WorkFlow.RepeatCommand.Count.ToString());
             }
-           
-            Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());
-            Console.WriteLine("RepeatCommand Count:" + Client.WorkFlow.RepeatCommand.Count.ToString());
         }
     }
 

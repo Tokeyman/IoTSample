@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataModel.MessageModel
+namespace DataModelStandard.MessageModel
 {
     /// <summary>
     /// 通信消息实体类
@@ -84,7 +84,7 @@ namespace DataModel.MessageModel
             FlowModel model = new FlowModel();
             model.Index = Convert.ToInt32(this.Index);
             model.TimeSpan = System.TimeSpan.Parse(this.TimeSpan);
-            model.Command = System.Text.Encoding.UTF8.GetBytes(Command);
+            model.Command = Transform.StringToBytes(Command);
             return model;
         }
     }

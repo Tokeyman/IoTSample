@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DataModel.MessageModel
+namespace DataModelStandard.MessageModel
 {
     public class ServerModel
     {

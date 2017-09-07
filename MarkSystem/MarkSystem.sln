@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkClient", "MarkClient\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelStandard", "DataModelStandard\DataModelStandard.csproj", "{68868491-D48A-43A2-BF51-5A99B5295FE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLibrary.Device", "GLibrary.Device\GLibrary.Device.csproj", "{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,22 @@ Global
 		{68868491-D48A-43A2-BF51-5A99B5295FE6}.Release|x64.Build.0 = Release|Any CPU
 		{68868491-D48A-43A2-BF51-5A99B5295FE6}.Release|x86.ActiveCfg = Release|Any CPU
 		{68868491-D48A-43A2-BF51-5A99B5295FE6}.Release|x86.Build.0 = Release|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|ARM.ActiveCfg = Debug|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|ARM.Build.0 = Debug|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x64.ActiveCfg = Debug|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x64.Build.0 = Debug|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x86.ActiveCfg = Debug|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Debug|x86.Build.0 = Debug|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|ARM.ActiveCfg = Release|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|ARM.Build.0 = Release|ARM
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x64.ActiveCfg = Release|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x64.Build.0 = Release|x64
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.ActiveCfg = Release|x86
+		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

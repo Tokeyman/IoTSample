@@ -9,7 +9,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using GLibrary.Windows.Net;
 using System.Collections.ObjectModel;
-using DataModel.MessageModel;
+using DataModelStandard.MessageModel;
 using Newtonsoft.Json;
 
 namespace MarkServer.ViewModel
