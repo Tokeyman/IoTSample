@@ -19,7 +19,7 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 客户端名称 Client+Guid组成  消息来源 
         /// </summary>
-        public string ClientName { get; set; }
+        public string SenderName { get; set; }
 
 
         /// <summary>
@@ -87,5 +87,18 @@ namespace DataModelStandard.MessageModel
             model.Command = Transform.StringToBytes(Command);
             return model;
         }
+    }
+
+    public static class CommandString
+    {
+        public const string 注册 = "Register";
+        public const string 推送 = "Push";
+        public const string 拉取 = "Pull";
+
+        public const string 开始 = "Start";
+        public const string 暂停 = "Pause";
+        public const string 恢复 = "Resume";
+        public const string 结束 = "Stop";
+        public const string 更新 = "Update";
     }
 }

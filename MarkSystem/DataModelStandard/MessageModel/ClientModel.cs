@@ -6,13 +6,13 @@ using System.Threading;
 namespace DataModelStandard.MessageModel
 {
     /// <summary>
-    /// 将客户端和服务器端的所有指令操作进行封装
+    /// 将客户端的所有指令操作进行封装
     /// </summary>
     public class ClientModel
     {
         #region 属性
         public string Guid { get; private set; }
-        public string ClientName { get; private set; }
+        public string Name { get; private set; }
         public WorkFlowModel WorkFlow { get; set; }
         public string Status { get; set; }
         #endregion 属性
@@ -20,7 +20,7 @@ namespace DataModelStandard.MessageModel
         public ClientModel(string Guid)
         {
             this.Guid = Guid;
-            this.ClientName = "Client" + Guid;
+            this.Name = "Client" + Guid;
             this.WorkFlow = new WorkFlowModel();
             this.Status = ClientStatus.Idle;
         }
@@ -83,8 +83,8 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 通知Socket发送命令
         /// </summary>
-        public event EventHandler<SocketSendArgs> SocketSend;
-        private void RaiseSocketSend(MessageModel message) => SocketSend?.Invoke(this, new SocketSendArgs(message));
+        public event EventHandler<ClientSocketSendArgs> SocketSend;
+        private void RaiseSocketSend(MessageModel message) => SocketSend?.Invoke(this, new ClientSocketSendArgs(message));
         #endregion 事件
 
         #region 方法
@@ -108,6 +108,38 @@ namespace DataModelStandard.MessageModel
         }
 
         /// <summary>
+        /// 处理从Socket过来的数据，对数据进行处理
+        /// </summary>
+        /// <param name=""></param>
+        public void Process(MessageModel message)
+        {
+            if (message.Command == CommandString.开始)
+            {
+                Start();
+            }
+            switch (message.Command)
+            {
+                case CommandString.开始: Start(); break;
+                case CommandString.暂停: Pause(); break;
+                case CommandString.恢复: Resume(); break;
+                case CommandString.结束: Stop(); break;
+                case CommandString.更新: Update(message.Data); break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 处理从UART RXD传递过来的数据
+        /// </summary>
+        /// <param name="buffer"></param>
+        public void Upload(byte[] buffer) //UART传递上来的数据
+        {
+            var message = System.Text.Encoding.UTF8.GetString(buffer);
+            RaiseSocketSend(Push(message));
+        }
+
+        /// <summary>
         /// 注销实例
         /// </summary>
         public void Dispose()
@@ -117,11 +149,14 @@ namespace DataModelStandard.MessageModel
 
         #endregion 方法
 
-        #region 外部调用命令
+        #region 上层命令处理
+
+
+
         /// <summary>
         /// 开始执行程序
         /// </summary>
-        public void Start()
+        private void Start()
         {
             TimingCommandPointer = 0;
             RepeatCommandPointer = 0;
@@ -135,7 +170,7 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 暂停程序执行
         /// </summary>
-        public void Pause()
+        private void Pause()
         {
             this.Status = ClientStatus.Suspend;
             //暂停工作程序,但是持续Push状态
@@ -144,14 +179,14 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 恢复程序执行
         /// </summary>
-        public void Resume()
+        private void Resume()
         {
             this.Status = ClientStatus.Running;
         }
         /// <summary>
         /// 停止程序执行
         /// </summary>
-        public void Stop()
+        private void Stop()
         {
             this.Status = ClientStatus.Idle;
             //停止工作程序
@@ -164,24 +199,13 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 更新工作程序
         /// </summary>
-        public void Update(MessageModel message)
+        private void Update(string MessageModelData)
         {
-            var json = message.Data;
+            var json = MessageModelData;
             MessageWorkFlowModel messageModel = JsonConvert.DeserializeObject<MessageWorkFlowModel>(json);
             this.WorkFlow = messageModel.ToModel();
         }
-
-        /// <summary>
-        /// 外部传递进来数据，需要通过Client推送走的数据
-        /// </summary>
-        /// <param name="buffer"></param>
-        public void Upload(byte[] buffer) //UART传递上来的数据
-        {
-            var message = System.Text.Encoding.UTF8.GetString(buffer);
-            RaiseSocketSend(Push(message));
-        }
-
-        #endregion 外部调用命令
+        #endregion 上层命令处理
 
         #region 命令生成
 
@@ -194,8 +218,8 @@ namespace DataModelStandard.MessageModel
             var model = new MessageModel
             {
                 Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Register",
+                SenderName = this.Name,
+                Command = CommandString.注册,
                 Data = ""
             };
             return model;
@@ -210,8 +234,8 @@ namespace DataModelStandard.MessageModel
             var model = new MessageModel
             {
                 Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Pull",
+                SenderName = this.Name,
+                Command = CommandString.拉取,
                 Data = ""
             };
             return model;
@@ -227,8 +251,8 @@ namespace DataModelStandard.MessageModel
             var model = new MessageModel
             {
                 Guid = this.Guid,
-                ClientName = this.ClientName,
-                Command = "Push",
+                SenderName = this.Name,
+                Command = CommandString.推送,
                 Data = message
             };
             return model;
@@ -270,9 +294,9 @@ namespace DataModelStandard.MessageModel
         public UartSendArgs(byte[] Buffer) => this.Buffer = Buffer;
     }
 
-    public class SocketSendArgs
+    public class ClientSocketSendArgs
     {
         public MessageModel MessageModel { get; set; }
-        public SocketSendArgs(MessageModel MessageModel) => this.MessageModel = MessageModel;
+        public ClientSocketSendArgs(MessageModel MessageModel) => this.MessageModel = MessageModel;
     }
 }

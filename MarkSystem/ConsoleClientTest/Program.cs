@@ -38,19 +38,6 @@ namespace ConsoleClientTest
                 {
                     Client.Go();
                 }
-                else if (cmd == "Start")
-                {
-
-                    Client.Start();
-                }
-                else if (cmd == "Pause")
-                {
-                    Client.Pause();
-                }
-                else if(cmd=="Stop")
-                {
-                    Client.Stop();
-                }
                 else
                 {
                     Console.WriteLine("Input Again");
@@ -74,7 +61,7 @@ namespace ConsoleClientTest
             Console.WriteLine("SEND TO UART:" + str);
         }
 
-        private static void Client_SocketSend(object sender, SocketSendArgs e)
+        private static void Client_SocketSend(object sender, ClientSocketSendArgs e)
         {
             var message = JsonConvert.SerializeObject(e.MessageModel);
             var buffer = System.Text.Encoding.UTF8.GetBytes(message);
@@ -87,9 +74,10 @@ namespace ConsoleClientTest
             //Console.WriteLine("Data Received:" + message);
 
             var messageFlow = JsonConvert.DeserializeObject<MessageModel>(message);
+            Client.Process(messageFlow);
             if (messageFlow.Command == "Update")
             {
-                Client.Update(messageFlow);
+                //Client.Update(messageFlow);
                 Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());
                 Console.WriteLine("RepeatCommand Count:" + Client.WorkFlow.RepeatCommand.Count.ToString());
             }
