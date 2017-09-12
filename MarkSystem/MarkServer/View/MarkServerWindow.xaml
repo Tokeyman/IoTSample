@@ -8,24 +8,40 @@
         DataContext="{Binding Source={StaticResource Locator},Path=Mark}"
         Title="MarkServer" Height="375" Width="540.518">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.33*"/>
             <ColumnDefinition Width="0.33*"/>
             <ColumnDefinition Width="0.33*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
+        <StackPanel Grid.Column="0" Grid.Row="0">
             <DataGrid
                 ItemsSource="{Binding ClientList}">
             </DataGrid>
         </StackPanel>
 
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" Grid.Row="0">
             <ListBox ItemsSource="{Binding ConnectedList}">
             </ListBox>
         </StackPanel>
 
-        <StackPanel Grid.Column="2">
+        <StackPanel Grid.Column="2" Grid.Row="0">
             <TextBox Text="{Binding ReceivedCommand}" TextWrapping="Wrap" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <Button Content="Update" Command="{Binding UpdateCommand}" Margin="5"/>
+            <Button Content="Start" Command="{Binding StartCommand}" Margin="5"/>
+            <Button Content="Pause" Command="{Binding PauseCommand}" Margin="5"/>
+            <Button Content="Resume" Command="{Binding ResumeCommand}" Margin="5"/>
+            <Button Content="Stop" Command="{Binding StopCommand}" Margin="5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <TextBox Text="{Binding SendToDbMessage}" TextWrapping="Wrap" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
     </Grid>
 </Window>

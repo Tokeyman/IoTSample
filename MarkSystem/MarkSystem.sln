@@ -11,9 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClientTest", "Consol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkClient", "MarkClient\MarkClient.csproj", "{0CF676D3-8FDE-4ECB-B751-76BEF409CDF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelStandard", "DataModelStandard\DataModelStandard.csproj", "{68868491-D48A-43A2-BF51-5A99B5295FE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModelStandard", "DataModelStandard\DataModelStandard.csproj", "{68868491-D48A-43A2-BF51-5A99B5295FE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLibrary.Device", "GLibrary.Device\GLibrary.Device.csproj", "{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XField", "XField\XField.csproj", "{0DF10E99-7DF5-416D-BDE8-F491874FC488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,22 @@ Global
 		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x64.Build.0 = Release|x64
 		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.ActiveCfg = Release|x86
 		{34BA16A9-700E-489F-A9BC-F4A9EEACF4E2}.Release|x86.Build.0 = Release|x86
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|ARM.Build.0 = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|ARM.ActiveCfg = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|ARM.Build.0 = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|x64.Build.0 = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DF10E99-7DF5-416D-BDE8-F491874FC488}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

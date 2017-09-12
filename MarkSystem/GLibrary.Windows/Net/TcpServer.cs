@@ -126,7 +126,8 @@ namespace GLibrary.Windows.Net
         /// <param name="iPEndPoint">目标节点</param>
         public void Send(byte[] Buffer, IPEndPoint iPEndPoint)
         {
-            var c = ClientList.FirstOrDefault(f => f.RemoteAddress == iPEndPoint.Address && f.RemotePort == iPEndPoint.Port);
+            var c = ClientList.FirstOrDefault(f => f.RemoteAddress.Equals(iPEndPoint.Address) && f.RemotePort == iPEndPoint.Port);
+
             if (c != null)
             {
                 Send(Buffer, c);
@@ -141,7 +142,7 @@ namespace GLibrary.Windows.Net
         /// <param name="RemotePort">目标端口</param>
         public void Send(byte[] Buffer, IPAddress RemoteIp, int RemotePort)
         {
-            var c = ClientList.FirstOrDefault(f => f.RemoteAddress == RemoteIp && f.RemotePort == RemotePort);
+            var c = ClientList.FirstOrDefault(f => f.RemoteAddress.Equals(RemoteIp) && f.RemotePort == RemotePort);
             if (c != null)
             {
                 Send(Buffer, c);

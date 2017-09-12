@@ -34,7 +34,9 @@ namespace DataModelStandard.MessageModel
 
     }
 
-
+    /// <summary>
+    /// 工作设定参数的数据传递模型
+    /// </summary>
     internal class MessageWorkFlowModel
     {
         public List<MessageFlowModel> TimingCommand { get; set; }
@@ -64,6 +66,7 @@ namespace DataModelStandard.MessageModel
 
     /// <summary>
     /// 用作数据传输
+    /// 单条工作指令的数据传递模型
     /// </summary>
     internal class MessageFlowModel
     {

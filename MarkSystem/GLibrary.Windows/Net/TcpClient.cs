@@ -195,7 +195,7 @@ namespace GLibrary.Windows.Net
                 Array.Copy(dataState.ReceivedBuffer, 0, buffer, 0, NumOfBytesRead);
                 // TcpClientState state = new TcpClientState(dataState.Client, NumOfBytesRead, dataState.ReceivedBuffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
                 // RaiseDataReceived(state);
-                RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, dataState.ReceivedBuffer);
+                RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, buffer);
                 ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(AsyncReadCallBack), dataState);
             }
             else  //连接被服务端断开

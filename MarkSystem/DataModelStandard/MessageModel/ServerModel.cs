@@ -11,7 +11,7 @@ namespace DataModelStandard.MessageModel
         private string Guid;
         private string Name;
 
-        public List<ClientModel> ClientList;
+        public List<ClientModel> ClientList { get; set; }
 
         public ServerModel()
         {
@@ -32,25 +32,26 @@ namespace DataModelStandard.MessageModel
             //Push 推送
             if (message.Command == CommandString.注册)
             {
-                var c = new ClientModel(message.Guid);
+                var c = ClientList.FirstOrDefault(f => f.Guid == message.Guid);
+                if (c == null) ClientList.Add(new ClientModel(message.Guid));
                 this.ClientList.Add(c);
             }
             else if (message.Command == CommandString.拉取)
             {
                 if (!ClientListContains(message.Guid)) return;
-
-                //TODO委托 读取数据库 获得拉取数据 
+                RaiseSendToDb(message.Guid, CommandString.拉取, "");
+                //委托 读取数据库 获得拉取数据 
             }
             else if (message.Command == CommandString.推送)
             {
                 if (!ClientListContains(message.Guid)) return;
-
-                //TODO委托 存入数据库 推送上来的数据
+                RaiseSendToDb(message.Guid, CommandString.推送, message.Data);
+                //委托 存入数据库 推送上来的数据
             }
         }
 
         /// <summary>
-        /// 客户端断开连接了
+        /// 客户端断开连接了，客户端连接在Process中的注册中处理了
         /// </summary>
         /// <param name="Guid">客户端Guid</param>
         public void ClientDisconnect(string Guid)
@@ -71,22 +72,30 @@ namespace DataModelStandard.MessageModel
         }
 
 
-        //TODO Process
         /// <summary>
-        /// 处理上层(DataBase)发送过来的消息
+        /// 处理上层(DataBase)发送过来的消息 非更新指令
         /// </summary>
         /// <param name="TargetGuid"></param>
         /// <param name="Command"></param>
-        /// <param name="Data"></param>
-        public void Process(string TargetGuid, string Command, string Data)
+        public void Process(string TargetGuid, string Command)
         {
             if (!ClientListContains(TargetGuid)) return;
             if (Command == CommandString.开始) RaiseSendToClient(TargetGuid, Start());
             else if (Command == CommandString.暂停) RaiseSendToClient(TargetGuid, Pause());
             else if (Command == CommandString.恢复) RaiseSendToClient(TargetGuid, Resume());
             else if (Command == CommandString.结束) RaiseSendToClient(TargetGuid, Stop());
-            else if (Command == CommandString.更新) RaiseSendToClient(TargetGuid, Update(Data));
+        }
 
+        /// <summary>
+        /// 处理上层(DataBase)发送过来的消息 更新指令
+        /// </summary>
+        /// <param name="TargetGuid"></param>
+        /// <param name="Command"></param>
+        /// <param name="WorFlowModel"></param>
+        public void Process(string TargetGuid, string Command, WorkFlowModel WorFlowModel)
+        {
+            if (!ClientListContains(TargetGuid)) return;
+            if (Command == CommandString.更新) RaiseSendToClient(TargetGuid, Update(WorFlowModel));
         }
 
         #region 命令生成
@@ -161,7 +170,8 @@ namespace DataModelStandard.MessageModel
         public event EventHandler<ServerSocketSendArgs> SendToClient;
         private void RaiseSendToClient(string TargetGuid, MessageModel Message) => SendToClient?.Invoke(this, new ServerSocketSendArgs(TargetGuid, Message));
 
-        public event EventHandler SendToDb;
+        public event EventHandler<ServerDbSendArgs> SendToDb;
+        private void RaiseSendToDb(string ClientGuid, string Command, string Data) => SendToDb?.Invoke(this, new ServerDbSendArgs(Guid, Command, Data));
     }
 
     public class ServerSocketSendArgs
@@ -179,7 +189,18 @@ namespace DataModelStandard.MessageModel
     {
         public string Guid { get; set; }  //客户端Guid
         public string Command { get; set; } //指令 Register Push Pull
+        /* Register指令，服务端收到客户端注册指令后，发送给Db处理程序，Db处理程序决定在状态列表中添加此设备，此设备可以在其他端显示
+         * Push指令，客户端上传信息，Db处理程序决定是否存储进入数据库
+         * Pull指令，客户端拉取信息，Db处理程序获得数据后调用Server对象的Process中Update命令，Server端发送给Client端
+         * 如此封装主要是为了多少实现一下DDD设计
+         * 
+         */
         public string Data { get; set; }   //数据 Push
-
+        public ServerDbSendArgs(string Guid, string Command, string Data)
+        {
+            this.Guid = Guid;
+            this.Command = Command;
+            this.Data = Data;
+        }
     }
 }
