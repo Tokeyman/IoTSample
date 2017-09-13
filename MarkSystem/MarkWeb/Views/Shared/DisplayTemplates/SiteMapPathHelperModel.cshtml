@@ -1,0 +1,50 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.SiteMapPathHelperModel
+@using System.Web.Mvc.Html
+@using System.Linq
+@using MvcSiteMapProvider.Web.Html.Models
+
+
+@foreach (var node in Model)
+{
+    if (node != Model.Last())
+    {
+        if (node == Model.First())
+        {
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                <a href="@node.Url" title="@node.Description">@node.Title</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@node.Url" title="@node.Description"> @node.Title</a>
+            </li>
+        }
+    }
+    else
+    {
+        if (node == Model.First())
+        {
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                @node.Title
+            </li>
+        }
+        else
+        {
+
+
+            <li class="active">
+                @node.Title
+            </li>
+        }
+    }
+
+    @*
+        if (node != Model.Last())
+        {
+            <text> &gt; </text>
+        }
+    *@
+}

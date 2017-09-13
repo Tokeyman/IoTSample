@@ -41,7 +41,7 @@ namespace DataModelStandard.MessageModel
                 //检查是否到5s
                 if (TimeCount >= TimeSpan.FromSeconds(5))
                 {
-                    RaiseSocketSend(Push(""));
+                    RaiseSendToServer(Push(""));
                     TimeCount = TimeSpan.Zero;
                 }
                 else  //未达到继续计数
@@ -76,15 +76,15 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 通知UART发送命令
         /// </summary>
-        public event EventHandler<UartSendArgs> UartSend;
-        private void RaiseUartSend(string message) => UartSend?.Invoke(this, new UartSendArgs(message));
-        private void RaiseUartSend(byte[] buffer) => UartSend?.Invoke(this, new UartSendArgs(buffer));
+        public event EventHandler<ClientUartSendArgs> SendToUart;
+        private void RaiseUartSend(string message) => SendToUart?.Invoke(this, new ClientUartSendArgs(message));
+        private void RaiseUartSend(byte[] buffer) => SendToUart?.Invoke(this, new ClientUartSendArgs(buffer));
 
         /// <summary>
         /// 通知Socket发送命令
         /// </summary>
-        public event EventHandler<ClientSocketSendArgs> SocketSend;
-        private void RaiseSocketSend(MessageModel message) => SocketSend?.Invoke(this, new ClientSocketSendArgs(message));
+        public event EventHandler<ClientSocketSendArgs> SendToServer;
+        private void RaiseSendToServer(Message message) => SendToServer?.Invoke(this, new ClientSocketSendArgs(message));
         #endregion 事件
 
         #region 方法
@@ -94,10 +94,10 @@ namespace DataModelStandard.MessageModel
         public void Go()
         {
             //注册本机
-            RaiseSocketSend(Register());
+            RaiseSendToServer(Register);
 
             //拉取工作程序
-            RaiseSocketSend(Pull());
+            RaiseSendToServer(Pull);
 
             //开启发送定时器
 
@@ -111,19 +111,15 @@ namespace DataModelStandard.MessageModel
         /// 处理从Socket过来的数据，对数据进行处理
         /// </summary>
         /// <param name=""></param>
-        public void Process(MessageModel message)
+        public void Process(Message message)
         {
-            if (message.Command == CommandString.开始)
+            switch ((string)message[PropertyString.Command])
             {
-                Start();
-            }
-            switch (message.Command)
-            {
-                case CommandString.开始: Start(); break;
-                case CommandString.暂停: Pause(); break;
-                case CommandString.恢复: Resume(); break;
-                case CommandString.结束: Stop(); break;
-                case CommandString.更新: Update(message.Data); break;
+                case CommandString.Start: Start(); break;
+                case CommandString.Pause: Pause(); break;
+                case CommandString.Resume: Resume(); break;
+                case CommandString.Stop: Stop(); break;
+                case CommandString.Update: Update((WorkFlowModel)message[PropertyString.Data]); break;
                 default:
                     break;
             }
@@ -136,7 +132,7 @@ namespace DataModelStandard.MessageModel
         public void Upload(byte[] buffer) //UART传递上来的数据
         {
             var message = System.Text.Encoding.UTF8.GetString(buffer);
-            RaiseSocketSend(Push(message));
+            RaiseSendToServer(Push(message));
         }
 
         /// <summary>
@@ -164,7 +160,6 @@ namespace DataModelStandard.MessageModel
             //设定Status为Running
             this.Status = ClientStatus.Running;
             //按照工作程序执行 ，给外部UART Event RaiseUartSend
-
         }
 
         /// <summary>
@@ -199,11 +194,9 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 更新工作程序
         /// </summary>
-        private void Update(string MessageModelData)
+        private void Update(WorkFlowModel WorkFlow)
         {
-            var json = MessageModelData;
-            MessageWorkFlowModel messageModel = JsonConvert.DeserializeObject<MessageWorkFlowModel>(json);
-            this.WorkFlow = messageModel.ToModel();
+            this.WorkFlow = WorkFlow;
         }
         #endregion 上层命令处理
 
@@ -212,51 +205,19 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 注册
         /// </summary>
-        /// <returns>消息实体类</returns>
-        private MessageModel Register()
-        {
-            var model = new MessageModel
-            {
-                Guid = this.Guid,
-                SenderName = this.Name,
-                Command = CommandString.注册,
-                Data = ""
-            };
-            return model;
-        }
+        private Message Register { get { return new Message(this.Guid, this.Name, CommandString.Register, null); } }
 
         /// <summary>
         /// 拉取工作程序
         /// </summary>
-        /// <returns>消息实体类</returns>
-        private MessageModel Pull()
-        {
-            var model = new MessageModel
-            {
-                Guid = this.Guid,
-                SenderName = this.Name,
-                Command = CommandString.拉取,
-                Data = ""
-            };
-            return model;
-        }
+        private Message Pull { get { return new Message(this.Guid, this.Name, CommandString.Pull, null); } }
 
         /// <summary>
         /// 推送消息
         /// </summary>
-        /// <param name="message">消息</param>
-        /// <returns>消息实体类</returns>
-        private MessageModel Push(string message)
-        {
-            var model = new MessageModel
-            {
-                Guid = this.Guid,
-                SenderName = this.Name,
-                Command = CommandString.推送,
-                Data = message
-            };
-            return model;
-        }
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private Message Push(string message)=> new Message(this.Guid, this.Name, CommandString.Push, message);
 
         #endregion 命令生成
     }
@@ -287,16 +248,16 @@ namespace DataModelStandard.MessageModel
         }
     }
 
-    public class UartSendArgs
+    public class ClientUartSendArgs
     {
         public byte[] Buffer { get; set; }
-        public UartSendArgs(string message) => this.Buffer = System.Text.Encoding.UTF8.GetBytes(message);
-        public UartSendArgs(byte[] Buffer) => this.Buffer = Buffer;
+        public ClientUartSendArgs(string message) => this.Buffer = System.Text.Encoding.UTF8.GetBytes(message);
+        public ClientUartSendArgs(byte[] Buffer) => this.Buffer = Buffer;
     }
 
     public class ClientSocketSendArgs
     {
-        public MessageModel MessageModel { get; set; }
-        public ClientSocketSendArgs(MessageModel MessageModel) => this.MessageModel = MessageModel;
+        public Message Message { get; set; }
+        public ClientSocketSendArgs(Message Message) => this.Message = Message;
     }
 }

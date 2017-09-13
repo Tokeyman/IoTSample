@@ -39,27 +39,12 @@ namespace DataModelStandard.MessageModel
 
         public void AddTimingCommand(TimeSpan TimeSpan, byte[] Command)
         {
-            TimingCommand.Add(new FlowModel(TimingCommand.Count + 1, TimeSpan, Command));
+            TimingCommand.Add(new FlowModel(TimingCommand.Count, TimeSpan, Command));
         }
 
         public void AddRepeatCommand(byte[] Command)
         {
-            RepeatCommand.Add(new FlowModel(RepeatCommand.Count + 1, TimeSpan.MinValue, Command));
-        }
-
-        internal MessageWorkFlowModel ToMessage()
-        {
-            ReSort();
-            MessageWorkFlowModel model = new MessageWorkFlowModel();
-            foreach (var item in TimingCommand)
-            {
-                model.TimingCommand.Add(item.ToMessage());
-            }
-            foreach (var item in RepeatCommand)
-            {
-                model.RepeatCommand.Add(item.ToMessage());
-            }
-            return model;
+            RepeatCommand.Add(new FlowModel(RepeatCommand.Count, TimeSpan.MinValue, Command));
         }
     }
 
@@ -86,14 +71,6 @@ namespace DataModelStandard.MessageModel
             this.Command = Command;
         }
 
-        internal MessageFlowModel ToMessage()
-        {
-            MessageFlowModel model = new MessageFlowModel();
-            model.Index = this.Index.ToString();
-            model.TimeSpan = this.TimeSpan.ToString();
-            model.Command = Transform.BytesToString(this.Command);
-            return model;
-        }
     }
 
 

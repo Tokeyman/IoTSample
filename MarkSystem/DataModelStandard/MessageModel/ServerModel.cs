@@ -30,22 +30,22 @@ namespace DataModelStandard.MessageModel
             //Register 注册
             //Pull 拉取
             //Push 推送
-            if (message.Command == CommandString.注册)
+            if (message.Command == CommandString.Register)
             {
                 var c = ClientList.FirstOrDefault(f => f.Guid == message.Guid);
                 if (c == null) ClientList.Add(new ClientModel(message.Guid));
                 this.ClientList.Add(c);
             }
-            else if (message.Command == CommandString.拉取)
+            else if (message.Command == CommandString.Pull)
             {
                 if (!ClientListContains(message.Guid)) return;
-                RaiseSendToDb(message.Guid, CommandString.拉取, "");
+                RaiseSendToDb(message.Guid, CommandString.Pull, "");
                 //委托 读取数据库 获得拉取数据 
             }
-            else if (message.Command == CommandString.推送)
+            else if (message.Command == CommandString.Push)
             {
                 if (!ClientListContains(message.Guid)) return;
-                RaiseSendToDb(message.Guid, CommandString.推送, message.Data);
+                RaiseSendToDb(message.Guid, CommandString.Push, message.Data);
                 //委托 存入数据库 推送上来的数据
             }
         }
@@ -80,10 +80,10 @@ namespace DataModelStandard.MessageModel
         public void Process(string TargetGuid, string Command)
         {
             if (!ClientListContains(TargetGuid)) return;
-            if (Command == CommandString.开始) RaiseSendToClient(TargetGuid, Start());
-            else if (Command == CommandString.暂停) RaiseSendToClient(TargetGuid, Pause());
-            else if (Command == CommandString.恢复) RaiseSendToClient(TargetGuid, Resume());
-            else if (Command == CommandString.结束) RaiseSendToClient(TargetGuid, Stop());
+            if (Command == CommandString.Start) RaiseSendToClient(TargetGuid, Start());
+            else if (Command == CommandString.Pause) RaiseSendToClient(TargetGuid, Pause());
+            else if (Command == CommandString.Resume) RaiseSendToClient(TargetGuid, Resume());
+            else if (Command == CommandString.Stop) RaiseSendToClient(TargetGuid, Stop());
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace DataModelStandard.MessageModel
         public void Process(string TargetGuid, string Command, WorkFlowModel WorFlowModel)
         {
             if (!ClientListContains(TargetGuid)) return;
-            if (Command == CommandString.更新) RaiseSendToClient(TargetGuid, Update(WorFlowModel));
+            if (Command == CommandString.Update) RaiseSendToClient(TargetGuid, Update(WorFlowModel));
         }
 
         #region 命令生成

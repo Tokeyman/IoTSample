@@ -1,0 +1,63 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.SiteMapNodeModelList
+@using System.Web.Mvc.Html
+@using MvcSiteMapProvider.Web.Html.Models
+
+<ul class="submenu">
+    @foreach (var node in Model)
+    {
+
+        if (node.Children.Any())  //如果有子菜单
+        {
+            var active = false;
+            var siteList = new List<SiteMapNodeModel>();
+            siteList.Add(node);
+
+            while (siteList.Count > 0)
+            {
+                SiteMapNodeModel child = siteList[0];
+                if (child.IsCurrentNode) { active = true; break; }
+                siteList.RemoveAt(0);
+                siteList.AddRange(child.Children);
+            }
+            if (active)
+            {
+                if (node.IsClickable == false)  //有下一级菜单
+                {
+                    <li class="acitve open">
+                        <a href="@node.Url" class="dropdown-toggle"><i class="menu-icon @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">@node.Title</span> <b class="arrow fa fa-angle-down"></b></a> <b class="arrow"></b>
+
+                        @Html.DisplayFor(m => node.Children)
+                    </li>
+                }
+                else  //没有下一级菜单
+                {
+                    <li class="active"><a href="@node.Url" title="@node.Description"><i class="menu-icon  @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">  @node.Title</span></a> <b class="arrow"></b></li>
+                }
+            }
+            else
+            {
+                if (node.IsClickable == false) //显示下一级菜单
+                {
+                    <li class="">
+                        <a href="@node.Url" class="dropdown-toggle"><i class="menu-icon @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">@node.Title</span> <b class="arrow fa fa-angle-down"></b></a> <b class="arrow"></b>
+                        @Html.DisplayFor(m => node.Children)
+                    </li>
+                }
+                else  //不显示下一级菜单
+                {
+                    <li class=""><a href="@node.Url" title="@node.Description"><i class="menu-icon  @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">  @node.Title</span></a> <b class="arrow"></b></li>
+                }
+
+            }
+
+        }
+        else if (node.IsCurrentNode)  //如果没有子菜单 但是为当前打开页面
+        {
+            @Html.DisplayFor(m => node)
+        }
+        else
+        {
+            @Html.DisplayFor(m => node)
+        }
+    }
+</ul>

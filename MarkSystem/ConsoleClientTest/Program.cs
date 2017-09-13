@@ -27,8 +27,8 @@ namespace ConsoleClientTest
             string cmd = Console.ReadLine();
 
             Client = new ClientModel("0001");
-            Client.SocketSend += Client_SocketSend;
-            Client.UartSend += Client_UartSend;
+            Client.SendToServer += Client_SocketSend;
+            Client.SendToUart += Client_UartSend;
 
 
 
@@ -49,7 +49,7 @@ namespace ConsoleClientTest
             Socket.Dispose();
         }
 
-        private static void Client_UartSend(object sender, UartSendArgs e)
+        private static void Client_UartSend(object sender, ClientUartSendArgs e)
         {
             // throw new NotImplementedException();
             var str = "";

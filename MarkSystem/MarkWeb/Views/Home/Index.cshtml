@@ -1,0 +1,27 @@
+﻿@model IEnumerable<MarkDbModel.Entity.OnlineCache>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@if (Model.Any())
+{
+    <table class="table table-hover table-striped">
+        <tr>
+            <th>Guid</th>
+            <th>IP</th>
+            <th>Port</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m=>item.ClientGuid)</td>
+                <td>@Html.DisplayFor(m=>item.Ip)</td>
+                <td>@Html.DisplayFor(m=>item.Port)</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <h3>无内容</h3>
+}

@@ -1,0 +1,120 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.MenuHelperModel
+
+@using System.Web.Mvc.Html
+@using MvcSiteMapProvider.Web.Html.Models
+@*
+    <ul id="menu">
+        @foreach (var node in Model.Nodes) {
+            <li>@Html.DisplayFor(m => node)
+                @if (node.Children.Any()) {
+                    @Html.DisplayFor(m => node.Children)
+                }
+            </li>
+        }
+    </ul>
+*@
+@*
+    <ul class="nav navbar-nav side-nav">
+        @foreach (var node in Model.Nodes)
+        {
+            if (node.Attributes.ContainsKey("requireAdmin"))
+            {
+                if ((Convert.ToBoolean(node.Attributes["requireAdmin"])) && (!User.IsInRole("Admin")))
+                {
+                    break;
+                }
+            }
+            if (node.Children.Any())
+            {
+                var active = false;
+                var siteList = new List<SiteMapNodeModel>();
+                siteList.Add(node);
+
+                while (siteList.Count > 0)
+                {
+                    SiteMapNodeModel child = siteList[0];
+                    if (child.IsCurrentNode) { active = true; break; }
+                    siteList.RemoveAt(0);
+                    siteList.AddRange(child.Children);
+                }
+
+                if (active)
+                {
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="@((node.ImageUrl=="")?"":node.ImageUrl.Substring(1))"></i>  @Html.DisplayTextFor(m => node.Title) <b class="caret"></b></a>
+                        @Html.DisplayFor(m => node.Children)
+                    </li>
+                }
+                else
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="@((node.ImageUrl=="")?"":node.ImageUrl.Substring(1))"></i>  @Html.DisplayTextFor(m => node.Title) <b class="caret"></b></a>
+                        @Html.DisplayFor(m => node.Children)
+                    </li>
+                }
+
+            }
+            else
+            {
+                if (node.IsCurrentNode)
+                {
+                    <li class="active">
+                        @Html.DisplayFor(m => node)
+
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        @Html.DisplayFor(m => node)
+                    </li>
+                }
+
+            }
+        }
+
+    </ul>
+
+*@
+
+<ul class="nav nav-list">
+    @foreach (var node in Model.Nodes)
+    {
+
+        if (node.Children.Any())
+        {
+            var active = false;
+            var siteList = new List<SiteMapNodeModel>();
+            siteList.Add(node);
+
+            while (siteList.Count > 0)
+            {
+                SiteMapNodeModel child = siteList[0];
+                if (child.IsCurrentNode) { active = true; break; }
+                siteList.RemoveAt(0);
+                siteList.AddRange(child.Children);
+            }
+            if (active)
+            {
+                <li class="acitve open">
+                    <a href="#" class="dropdown-toggle"><i class="menu-icon @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">@node.Title</span> <b class="arrow fa fa-angle-down"></b></a> <b class="arrow"></b>
+
+                    @Html.DisplayFor(m => node.Children)
+                </li>
+            }
+            else
+            {
+                <li class="">
+                    <a href="#" class="dropdown-toggle"><i class="menu-icon @((node.ImageUrl == "") ? "" : node.ImageUrl.Substring(1))"></i><span class="menu-text">@node.Title</span> <b class="arrow fa fa-angle-down"></b></a> <b class="arrow"></b>
+
+                    @Html.DisplayFor(m => node.Children)
+                </li>
+            }
+        }
+
+        else
+        {
+            @Html.DisplayFor(m => node)
+        }
+    }
+</ul>

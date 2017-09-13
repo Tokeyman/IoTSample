@@ -85,7 +85,7 @@ namespace MarkServer.ViewModel
                 ReceivedCommand += client + ":" + model.Command + "\n";
                 Server.Upload(model); //交给服务端程序处理
 
-                if (model.Command == CommandString.注册)  //同步客户端--也可以从Server的ClientList中获取
+                if (model.Command == CommandString.Register)  //同步客户端--也可以从Server的ClientList中获取
                 {
                     var c = ClientList.FirstOrDefault(f => f.IP == clientIp && f.Port == clientPort);
                     if (c == null)
@@ -192,14 +192,14 @@ namespace MarkServer.ViewModel
             workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x30, 0xfe });
             workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x31, 0xfe });
 
-            Server.Process(TargetGuid, CommandString.更新, workFlow);
+            Server.Process(TargetGuid, CommandString.Update, workFlow);
         }
-        private void Start() => Server.Process(TargetGuid, CommandString.开始);
+        private void Start() => Server.Process(TargetGuid, CommandString.Start);
 
 
-        private void Pause() => Server.Process(TargetGuid, CommandString.暂停);
-        private void Resume() => Server.Process(TargetGuid, CommandString.恢复);
-        private void Stop() => Server.Process(TargetGuid, CommandString.结束);
+        private void Pause() => Server.Process(TargetGuid, CommandString.Pause);
+        private void Resume() => Server.Process(TargetGuid, CommandString.Resume);
+        private void Stop() => Server.Process(TargetGuid, CommandString.Stop);
         #endregion
     }
 
