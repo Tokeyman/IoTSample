@@ -12,7 +12,7 @@ namespace ConsoleClientTest
 {
     class Program
     {
-        private static ClientModel Client;
+        private static MarkClinet Client;
         private static TcpClient Socket;
         static void Main(string[] args)
         {
@@ -26,8 +26,8 @@ namespace ConsoleClientTest
 
             string cmd = Console.ReadLine();
 
-            Client = new ClientModel("0001");
-            Client.SendToServer += Client_SocketSend;
+            Client = new MarkClinet("0001");
+            Client.SendToServer += Client_SendToServer;
             Client.SendToUart += Client_UartSend;
 
 
@@ -48,8 +48,12 @@ namespace ConsoleClientTest
 
             Socket.Dispose();
         }
+        private static JsonSerializerSettings jSettings = new JsonSerializerSettings()
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
 
-        private static void Client_UartSend(object sender, ClientUartSendArgs e)
+        private static void Client_UartSend(object sender, ClientSendToUartArgs e)
         {
             // throw new NotImplementedException();
             var str = "";
@@ -61,21 +65,23 @@ namespace ConsoleClientTest
             Console.WriteLine("SEND TO UART:" + str);
         }
 
-        private static void Client_SocketSend(object sender, ClientSocketSendArgs e)
+        private static void Client_SendToServer(object sender, ClientSendToServerArgs e)
         {
-            var message = JsonConvert.SerializeObject(e.MessageModel);
+            
+            var message = JsonConvert.SerializeObject(e.Message,jSettings);
             var buffer = System.Text.Encoding.UTF8.GetBytes(message);
             Socket.Send(buffer);
         }
 
+
         private static void Socket_DataReceived(object sender, TcpClientDataReceivedArgs e)
         {
-            var message = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
+            var json = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
             //Console.WriteLine("Data Received:" + message);
 
-            var messageFlow = JsonConvert.DeserializeObject<MessageModel>(message);
-            Client.Process(messageFlow);
-            if (messageFlow.Command == "Update")
+            var message = JsonConvert.DeserializeObject<MarkMessage>(json,jSettings);
+            Client.Process(message);
+            if ((string)message[PropertyString.Action] == ActionType.Update)
             {
                 //Client.Update(messageFlow);
                 Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());

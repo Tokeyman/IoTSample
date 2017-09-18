@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarkDbModel.Entity
 {
-    public class MarkClient
+    public class MarkClient  //Remove IP and Port message
     {
         public string Id { get; set; }
         public string Ip { get; set; }

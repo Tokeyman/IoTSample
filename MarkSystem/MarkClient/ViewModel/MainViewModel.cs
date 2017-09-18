@@ -29,12 +29,12 @@ namespace MarkClient.ViewModel
         }
 
         private TcpClient Socket;
-        private ClientModel Client;
+        private MarkClinet Client;
         private string Guid = "0001";
 
         private void Connect()
         {
-            Client = new ClientModel(this.Guid);
+            Client = new MarkClinet(this.Guid);
             Socket = new TcpClient(ServerIp, ServerPort);
             Socket.Connected += Socket_Connected;
             Socket.Disconnected += Socket_Disconnected;

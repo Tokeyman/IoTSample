@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace DataModelStandard.MessageModel
 {
-    public class WorkFlowModel
+    public class WorkFlow
     {
         /// <summary>
         /// 时序命令
         /// </summary>
-        public List<FlowModel> TimingCommand { get; set; }
+        public List<Flow> TimingCommand { get; set; }
 
         /// <summary>
         /// 重复命令
         /// </summary>
-        public List<FlowModel> RepeatCommand { get; set; }
+        public List<Flow> RepeatCommand { get; set; }
 
-        public WorkFlowModel()
+        public WorkFlow()
         {
-            this.TimingCommand = new List<FlowModel>();
-            this.RepeatCommand = new List<FlowModel>();
+            this.TimingCommand = new List<Flow>();
+            this.RepeatCommand = new List<Flow>();
         }
 
         /// <summary>
@@ -39,16 +39,16 @@ namespace DataModelStandard.MessageModel
 
         public void AddTimingCommand(TimeSpan TimeSpan, byte[] Command)
         {
-            TimingCommand.Add(new FlowModel(TimingCommand.Count, TimeSpan, Command));
+            TimingCommand.Add(new Flow(TimingCommand.Count, TimeSpan, Command));
         }
 
         public void AddRepeatCommand(byte[] Command)
         {
-            RepeatCommand.Add(new FlowModel(RepeatCommand.Count, TimeSpan.MinValue, Command));
+            RepeatCommand.Add(new Flow(RepeatCommand.Count, TimeSpan.MinValue, Command));
         }
     }
 
-    public class FlowModel
+    public class Flow
     {
         /// <summary>
         /// 序号
@@ -63,8 +63,8 @@ namespace DataModelStandard.MessageModel
         /// </summary>
         public byte[] Command { get; set; }
 
-        public FlowModel() { }
-        public FlowModel(int Index, TimeSpan TimeSpan, byte[] Command)
+        public Flow() { }
+        public Flow(int Index, TimeSpan TimeSpan, byte[] Command)
         {
             this.Index = Index;
             this.TimeSpan = TimeSpan;

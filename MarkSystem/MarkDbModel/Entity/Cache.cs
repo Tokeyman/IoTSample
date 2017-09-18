@@ -13,6 +13,9 @@ namespace MarkDbModel.Entity
         public string ClientGuid { get; set; }
         public string Ip { get; set; }
         public int Port { get; set; }
+        public string Status { get; set; } //客户端状态
+
+        public string DataCache { get; set; }
 
         public OnlineCache() { }
         public OnlineCache(string ClientGuid,string Ip,int Port)

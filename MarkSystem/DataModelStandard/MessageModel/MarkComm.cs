@@ -9,9 +9,10 @@ namespace DataModelStandard.MessageModel
     /// <summary>
     /// 命令类型
     /// </summary>
-    public static class CommandString
+    public static class ActionType  //Could also named ActionType
     {
         public const string Register = "Register";
+        public const string Close = "Close"; //断开连接
         public const string Push = "Push";
         public const string Pull = "Pull";
 
@@ -27,41 +28,44 @@ namespace DataModelStandard.MessageModel
     /// </summary>
     public static class PropertyString
     {
-        public const string Guid = "Guid";
+        public const string SenderGuid = "Guid";
         public const string Sender = "Sender";
-        public const string Command = "Command";
+
+        public const string TargetGuid = "TargetGuid";
+        public const string Target = "Target";
+
+        public const string Action = "Action";
+        public const string WorkFlow = "WorkFlow";
+        public const string Status = "Status";
         public const string Data = "Data";
     }
 
     /// <summary>
     /// 继承一下类型，为了封装类型
     /// </summary>
-    public class Message : Dictionary<string, object>
+    public class MarkMessage : Dictionary<string, object>
     {
         /// <summary>
-        /// 初始化自带4个属性，其余属性可自有扩展
+        /// 默认构造函数，自带属性SenderGuid,Sender,Action;其余属性自行添加
         /// </summary>
-        public Message()
+        public MarkMessage()
         {
-            Add(PropertyString.Guid, null);
+            Add(PropertyString.SenderGuid, null);
             Add(PropertyString.Sender, null);
-            Add(PropertyString.Command, null);
-            Add(PropertyString.Data, null);
+            Add(PropertyString.Action, null);
         }
 
         /// <summary>
         /// 具备参数的初始化
         /// </summary>
-        /// <param name="Guid"></param>
-        /// <param name="Sender"></param>
-        /// <param name="Command"></param>
-        /// <param name="Data">无数据为null</param>
-        public Message(object Guid,object Sender,object Command,object Data):this()
+        /// <param name="SenderGuid">发送者GUID</param>
+        /// <param name="Sender">发送者名字</param>
+        /// <param name="Action">动作类型</param>
+        public MarkMessage(object SenderGuid, object Sender,object Action) : this()
         {
-            base[PropertyString.Guid] = Guid;
+            base[PropertyString.SenderGuid] = SenderGuid;
             base[PropertyString.Sender] = Sender;
-            base[PropertyString.Command] = Command;
-            base[PropertyString.Data] = Data;
+            base[PropertyString.Action] = Action;
         }
     }
 }

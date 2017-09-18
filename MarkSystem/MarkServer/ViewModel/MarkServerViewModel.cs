@@ -13,6 +13,8 @@ using DataModelStandard.MessageModel;
 using Newtonsoft.Json;
 using System.Net;
 using System.Windows.Input;
+using MarkDbModel;
+using MarkDbModel.Entity;
 
 namespace MarkServer.ViewModel
 {
@@ -38,9 +40,14 @@ namespace MarkServer.ViewModel
         public ICommand StopCommand { get; set; }
 
         private TcpServer Socket;
-        private WorkFlowModel workFlow;
+        private WorkFlow workFlow;
 
-        private ServerModel Server;
+        private DataModelStandard.MessageModel.MarkServer Server;
+        private JsonSerializerSettings jSetting = new JsonSerializerSettings()
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
+
         public MarkServerViewModel()
         {
             if (IsInDesignMode)
@@ -49,7 +56,10 @@ namespace MarkServer.ViewModel
             }
             else
             {
-                Server = new ServerModel();
+                Server = new DataModelStandard.MessageModel.MarkServer("9000", "Server");
+                Server.ClientConnected += Server_ClientConnected;
+                Server.ClientRegisterd += Server_ClientRegisterd;
+                Server.ClientClosed += Server_ClientClosed;
                 Server.SendToDb += Server_SendToDb;
                 Server.SendToClient += Server_SendToClient;
 
@@ -58,6 +68,7 @@ namespace MarkServer.ViewModel
                 Socket.ClientDisconnected += Socket_ClientDisconnected;
                 Socket.DataReceived += Socket_DataReceived;
                 Socket.Start();
+
 
                 #region  UI Command
                 UpdateCommand = new RelayCommand(Update);
@@ -68,6 +79,81 @@ namespace MarkServer.ViewModel
                 #endregion
             }
         }
+        private void Server_ClientConnected(object sender, ClientConnectedArgs e)
+        {
+            var client = e.Ip + ":" + e.Port.ToString();
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var c = ConnectedList.FirstOrDefault(f => f == client);
+                if (c == null) ConnectedList.Add(client);
+            });
+
+        }
+
+        private void Server_ClientRegisterd(object sender, ClientRegisterdArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var c = ClientList.FirstOrDefault(f => f.Guid == e.Guid);
+                if (c == null) ClientList.Add(new ClientItem(e.Ip, e.Port.ToString(), e.Guid));
+            });
+        }
+
+        private void Server_ClientClosed(object sender, ClientClosedArgs e)
+        {
+            var client = e.Ip + ":" + e.Port.ToString();
+            var clientIp = e.Ip;
+            var clientPort = e.Port.ToString();
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var c = ClientList.FirstOrDefault(f => f.IP == clientIp && f.Port == clientPort);
+                if (c != null) ClientList.Remove(c);
+                var cc = ConnectedList.FirstOrDefault(f => f == client);
+                if (cc != null) ConnectedList.Remove(cc);
+            });
+        }
+
+        private void Server_SendToClient(object sender, ServerSocketSendArgs e)
+        {
+            if (Socket != null)
+            {
+                //序列化内容
+                var json = JsonConvert.SerializeObject(e.Message, jSetting);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+                IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(e.RemoteIp), e.RemotePort);
+                Socket.Send(buffer, iPEndPoint);
+            }
+
+        }
+
+        private void Server_SendToDb(object sender, ServerDbSendArgs e)
+        {
+            //TODO 连接数据库处理程序
+            //目前手动处理提示信息
+            var senderGuid = (string)e.Message[PropertyString.SenderGuid];
+            var action = (string)e.Message[PropertyString.Action];
+
+            var message = senderGuid + ":" + action + "\n";
+            SendToDbMessage += message;
+
+
+
+            //处理Register Push Pull和Close请求
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                if (action == ActionType.Pull)
+                {
+                    //TODO Generate WorkFlow and RaiseToUpdate
+                }
+                else if (action == ActionType.Push)
+                {
+                    //TODO Push Data
+                }
+
+                db.SaveChanges();
+            }
+        }
+
 
         private void Socket_DataReceived(object sender, TcpServerDataReceivedArgs e)
         {
@@ -76,28 +162,10 @@ namespace MarkServer.ViewModel
             var client = clientIp + ":" + clientPort;
 
 
-            var message = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
+            var json = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
 
-            var model = JsonConvert.DeserializeObject<MessageModel>(message);
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                ReceivedCommand += client + ":" + model.Command + "\n";
-                Server.Upload(model); //交给服务端程序处理
-
-                if (model.Command == CommandString.Register)  //同步客户端--也可以从Server的ClientList中获取
-                {
-                    var c = ClientList.FirstOrDefault(f => f.IP == clientIp && f.Port == clientPort);
-                    if (c == null)
-                    {
-                        //TODO 增加
-                        ClientItem item = new ClientItem(clientIp, clientPort, model.Guid);
-                        ClientList.Add(item);
-
-                    }
-                }
-            });
-
+            var model = JsonConvert.DeserializeObject<MarkMessage>(json, jSetting);
+            Server.Upload(e.RemoteHost.ToString(), e.RemotePort, model);
         }
 
 
@@ -108,24 +176,7 @@ namespace MarkServer.ViewModel
         /// <param name="e"></param>
         private void Socket_ClientDisconnected(object sender, TcpServerClientDisconnectdArgs e)
         {
-            var clientIp = e.RemoteHost.ToString();
-            var clientPort = e.RemotePort.ToString();
-            var client = clientIp + ":" + clientPort;
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                if (ConnectedList.Contains(client))
-                {
-                    ConnectedList.Remove(client);
-                }
-                //检查ClientList中相同项目 
-                var c = ClientList.FirstOrDefault(f => f.IP == clientIp && f.Port == clientPort);
-                if (clientPort != null)
-                {
-                    ClientList.Remove(c);
-                }
-
-            });
+            Server.ClientClose(e.RemoteHost.ToString(), e.RemotePort);
         }
 
         /// <summary>
@@ -135,55 +186,14 @@ namespace MarkServer.ViewModel
         /// <param name="e"></param>
         private void Socket_ClientConnected(object sender, TcpServerClientConnectdArgs e)
         {
-            var client = e.RemoteHost.ToString() + ":" + e.RemotePort.ToString();
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                if (!ConnectedList.Contains(client))
-                {
-                    ConnectedList.Add(client);
-                }
-            });
-
-
+            Server.ClientConnect(e.RemoteHost.ToString(), e.RemotePort);
         }
-
-        private void Server_SendToClient(object sender, ServerSocketSendArgs e)
-        {
-            if (Socket != null)
-            {
-                //从当前的连接列表中根据Guid获取 目标的IP和Port
-                var c = ClientList.FirstOrDefault(f => f.Guid == e.TargetGuid);
-                if (c != null)
-                {
-                    //序列化内容
-                    var json = JsonConvert.SerializeObject(e.Message);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(json);
-                    IPAddress remoteHost;
-                    IPAddress.TryParse(c.IP, out remoteHost);
-                    //从当前的客户端列表中获得IP和Port后发送到目标
-
-                    IPEndPoint iPEndPoint = new IPEndPoint(remoteHost, Convert.ToInt32(c.Port));
-                    Socket.Send(buffer, iPEndPoint);
-                }
-            }
-        }
-
-        private void Server_SendToDb(object sender, ServerDbSendArgs e)
-        {
-            //TODO 连接数据库处理程序
-            //目前手动处理提示信息
-
-            var message = e.Guid + ":" + e.Command + "\n";
-            SendToDbMessage += message;
-            //throw new NotImplementedException();
-        }
-
 
         #region Testing Methord
         private string TargetGuid = "0001";
         private void Update()
         {
-            workFlow = new WorkFlowModel();
+            workFlow = new WorkFlow();
             workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x10, 0xfe });
             workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x11, 0xfe });
             workFlow.AddTimingCommand(TimeSpan.FromSeconds(5), new byte[] { 0x7f, 0xef, 0x12, 0xfe });
@@ -192,16 +202,50 @@ namespace MarkServer.ViewModel
             workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x30, 0xfe });
             workFlow.AddRepeatCommand(new byte[] { 0x7f, 0xef, 0x31, 0xfe });
 
-            Server.Process(TargetGuid, CommandString.Update, workFlow);
+            var model = new MarkMessage(null, null, ActionType.Update)
+            {
+                { PropertyString.TargetGuid, TargetGuid },
+                { PropertyString.WorkFlow, workFlow }
+            };
+            Server.Process(model);
         }
-        private void Start() => Server.Process(TargetGuid, CommandString.Start);
 
+        private void Start()
+        {
+            var model = new MarkMessage(null, null, ActionType.Start)
+            {
+                { PropertyString.TargetGuid, TargetGuid }
+            };
+            Server.Process(model);
+        } 
 
-        private void Pause() => Server.Process(TargetGuid, CommandString.Pause);
-        private void Resume() => Server.Process(TargetGuid, CommandString.Resume);
-        private void Stop() => Server.Process(TargetGuid, CommandString.Stop);
+        private void Pause()
+        {
+            var model = new MarkMessage(null, null, ActionType.Pause)
+            {
+                { PropertyString.TargetGuid, TargetGuid }
+            };
+            Server.Process(model);
+        }
+
+        private void Resume()
+        {
+            var model = new MarkMessage(null, null, ActionType.Resume)
+            {
+                { PropertyString.TargetGuid, TargetGuid }
+            };
+            Server.Process(model);
+        }
+
+        private void Stop()
+        {
+            var model = new MarkMessage(null, null, ActionType.Stop)
+            {
+                { PropertyString.TargetGuid, TargetGuid }
+            };
+            Server.Process(model);
+        }
         #endregion
     }
-
-
 }
+
