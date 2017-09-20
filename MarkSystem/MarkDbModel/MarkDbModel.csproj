@@ -48,9 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDbContext.cs" />
-    <Compile Include="Entity\Cache.cs" />
     <Compile Include="Entity\Command.cs" />
     <Compile Include="Entity\MarkClient.cs" />
+    <Compile Include="Entity\Operation.cs" />
     <Compile Include="Migrations\201709130228507_Initialize.cs" />
     <Compile Include="Migrations\201709130228507_Initialize.Designer.cs">
       <DependentUpon>201709130228507_Initialize.cs</DependentUpon>
@@ -59,8 +59,18 @@
     <Compile Include="Migrations\201709130232272_OnlineCache.Designer.cs">
       <DependentUpon>201709130232272_OnlineCache.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709190222557_Fix091901.cs" />
+    <Compile Include="Migrations\201709190222557_Fix091901.Designer.cs">
+      <DependentUpon>201709190222557_Fix091901.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709190327172_Fix091902.cs" />
+    <Compile Include="Migrations\201709190327172_Fix091902.Designer.cs">
+      <DependentUpon>201709190327172_Fix091902.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\IMarkService.cs" />
+    <Compile Include="Service\MarkService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -72,6 +82,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709130232272_OnlineCache.resx">
       <DependentUpon>201709130232272_OnlineCache.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709190222557_Fix091901.resx">
+      <DependentUpon>201709190222557_Fix091901.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709190327172_Fix091902.resx">
+      <DependentUpon>201709190327172_Fix091902.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

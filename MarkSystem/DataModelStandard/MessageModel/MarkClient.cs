@@ -131,7 +131,7 @@ namespace DataModelStandard.MessageModel
         /// <param name="buffer"></param>
         public void Upload(byte[] buffer) //UART传递上来的数据
         {
-            var message =Transform.BytesToString(buffer);
+            var message =Transform.BytesToString(buffer);  //Try not to use Transform methord
             RaiseSendToServer(Push(message));
         }
 

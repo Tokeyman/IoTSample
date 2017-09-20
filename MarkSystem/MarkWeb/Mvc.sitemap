@@ -4,7 +4,10 @@
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
   <mvcSiteMapNode title="Dashboard" controller="Home" action="Index" imageUrl="fa fa-desktop">
-    <mvcSiteMapNode title="Program" controller="Home" action="About" imageUrl="fa fa-tasks"/>
+    <mvcSiteMapNode title="Program" controller="Command" action="Index" imageUrl="fa fa-tasks">
+      <mvcSiteMapNode title="CommandGroup" controller="Command" action="Index" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="EditCommand" controller="Command" action="EditCommand" preservedRouteParameters="id"/>
+      </mvcSiteMapNode>
   </mvcSiteMapNode>
 
 </mvcSiteMap>

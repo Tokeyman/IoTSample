@@ -29,7 +29,7 @@ namespace MarkDbModel
 
         public DbSet<CommandGroup> CommandGroup { get; set; }
 
-        public DbSet<OnlineCache> OnlineCache { get; set; }
+        public DbSet<Operation> Operation { get; set; }
 
         #endregion DataTable
     }

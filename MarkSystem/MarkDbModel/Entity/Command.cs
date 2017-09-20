@@ -51,6 +51,33 @@ namespace MarkDbModel.Entity
         public void AddToGroup(string GroupId) => CommandGroupId = GroupId;
         public void RemoveGroup() => CommandGroupId = null;
 
+
+        public override string ToString()
+        {
+            string s = "";
+            s += Index.ToString() + " ";
+            s += Convert.ToInt32(TimeSpan.TotalSeconds).ToString() + " ";
+            s += CommandContext;
+            return s;
+
+        }
+
+        public static Command Parse(string s)
+        {
+            Command c = new Command();
+            string[] paras = s.Split(' ');
+            c.Index = int.Parse(paras[0]);
+            double seconds = double.Parse(paras[1]);
+            c.TimeSpan = TimeSpan.FromSeconds(seconds);
+            string cc = "";
+            for (int i = 2; i < paras.Length; i++)
+            {
+                cc += paras[i] + " ";
+            }
+            cc = cc.Substring(0, cc.Length - 1);
+            c.CommandContext = cc;
+            return c;
+        }
     }
 
     public class CommandGroup

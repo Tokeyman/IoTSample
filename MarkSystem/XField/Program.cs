@@ -13,15 +13,13 @@ namespace XField
         public string Guid { get; set; }
         public string Sender { get; set; }
         public string Command { get; set; }
-        public Dictionary<string,object> Data { get; set; }
+        public Dictionary<string, object> Data { get; set; }
 
         public MessageModel()
         {
             Data = new Dictionary<string, object>();
         }
     }
-
-
 
     public class WorkFlow
     {
@@ -41,7 +39,7 @@ namespace XField
         public byte[] Command { get; set; }
 
         public Flow() { }
-        public Flow(int Index,TimeSpan TimeSpan,byte[] Command)
+        public Flow(int Index, TimeSpan TimeSpan, byte[] Command)
         {
             this.Index = Index;
             this.TimeSpan = TimeSpan;
@@ -76,8 +74,10 @@ namespace XField
         }
     }
 
+    /* 
     class Program
     {
+       
         static void Main(string[] args)
         {
             WorkFlow workFlow = new WorkFlow();
@@ -120,5 +120,8 @@ namespace XField
             
             Console.ReadLine();
         }
-    }
+
+
+
+}*/
 }

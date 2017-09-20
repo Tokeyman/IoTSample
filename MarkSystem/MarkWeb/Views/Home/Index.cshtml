@@ -1,22 +1,41 @@
-﻿@model IEnumerable<MarkDbModel.Entity.OnlineCache>
+﻿@model IEnumerable<MarkDbModel.Entity.MarkClient>
 @{
     ViewBag.Title = "Home Page";
 }
+
+<p>
+    <a class="btn btn-sm btn-primary" onclick="CreateClient(); return false;" href="#" title="添加"><i class="icon-only ace-icon fa fa-plus bigger-110"></i></a>
+</p>
 
 @if (Model.Any())
 {
     <table class="table table-hover table-striped">
         <tr>
+            <th>Online</th>
             <th>Guid</th>
+            <th>Status</th>
+            <th>Command Group</th>
             <th>IP</th>
             <th>Port</th>
+            <th></th>
         </tr>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(m=>item.ClientGuid)</td>
-                <td>@Html.DisplayFor(m=>item.Ip)</td>
-                <td>@Html.DisplayFor(m=>item.Port)</td>
+                <td>@item.Online</td>
+                <td>@Html.DisplayFor(m => item.ClientGuid)</td>
+                <td>@Html.DisplayFor(m => item.Status)</td>
+                <td>
+                    @((item.CommandGroup==null)?"Null":item.CommandGroup.Description)
+                </td>
+                <td>@Html.DisplayFor(m => item.Ip)</td>
+                <td>@Html.DisplayFor(m => item.Port)</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="green" href="@Url.Action("EditClient","Home",new {Id=item.Id})" title="Edit"><i class="ace-icon fa fa-pencil bigger-130"></i></a>
+                        <a class="red" onclick="javascrpt: RemoveClient('@item.Id','@item.ClientGuid'); return false;" href="#" title="Delete"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>
+                    </div>
+                </td>
             </tr>
         }
     </table>
@@ -25,3 +44,85 @@ else
 {
     <h3>无内容</h3>
 }
+
+<div class="modal fade" tabindex="-1" id="AddClientModal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Ajax.BeginForm("CreateClient", "Home", null, new AjaxOptions()
+            {
+                HttpMethod = "POST",
+                OnSuccess = "onSuccess"
+            }, new { @class = "form-horizontal", role = "form"}))
+            {
+                @Html.AntiForgeryToken();
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add Client</h4>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class=" form-group">
+                        <label class="col-md-2 control-label" for="CreateGuid">Guid</label>
+                        <div class=" col-md-10">
+                            <input class="form-control" id="CreateGuid" name="CreateGuid" type="text" />
+                        </div>
+                    </div>
+                    <div class=" form-group">
+                        <label class="col-md-2 control-label" for="CreateDescription">Description</label>
+                        <div class=" col-md-10">
+                            <input class="form-control" id="CreateDescription" name="CreateDescription" type="text" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="DeleteClientModal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Ajax.BeginForm("RemoveClient", "Home", null, new AjaxOptions()
+            {
+                HttpMethod = "POST",
+                OnSuccess = "onSuccess"
+            }, new { @class = "form-horizontal", role = "form" }))
+            {
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    Confirm delte client? "<label id="RemoveGuid" name="RemoveGuid"></label>"?
+                    <input id="RemoveClientId" name="RemoveClientId" type="hidden" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function CreateClient() {
+        $('#AddClientModal').modal();
+    }
+    function RemoveClient(id, name)
+    {
+        $('#RemoveGuid').text(name);
+        $('#RemoveClientId').val(id);
+        $('#DeleteClientModal').modal();
+    }
+    function onSuccess(result) {
+        $('#AddClientModal').modal('hide');
+        window.location.reload();
+    }
+</script>

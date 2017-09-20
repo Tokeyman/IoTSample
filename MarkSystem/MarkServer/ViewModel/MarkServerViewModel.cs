@@ -79,6 +79,7 @@ namespace MarkServer.ViewModel
                 #endregion
             }
         }
+
         private void Server_ClientConnected(object sender, ClientConnectedArgs e)
         {
             var client = e.Ip + ":" + e.Port.ToString();
