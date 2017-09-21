@@ -77,6 +77,14 @@ namespace MarkWeb.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult ClientAction(string TargetGuid, string Action)
+        {
+            Operation op = new Operation(TargetGuid, Action);
+            db.Operation.Add(op);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }
 
 
         public ActionResult About()

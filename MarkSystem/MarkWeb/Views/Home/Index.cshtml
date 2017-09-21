@@ -11,6 +11,7 @@
 {
     <table class="table table-hover table-striped">
         <tr>
+            <th>Action</th>
             <th>Online</th>
             <th>Guid</th>
             <th>Status</th>
@@ -22,6 +23,13 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <div class="action-buttons">
+                        <a class="green" onclick="javascript: Operation('@item.ClientGuid', '@((item.Status=="Pause")?"Resume":"Start")'); return false;" href="#" title="Start"><i class="ace-icon fa fa-play bigger-130"></i></a>
+                        <a class="orange" onclick="javascript:Operation('@item.ClientGuid','Pause');return false;" href="#" title="Start"><i class="ace-icon fa fa-pause bigger-130"></i></a>
+                        <a class="red"  onclick="javascript:Operation('@item.ClientGuid','Stop');return false;" href="#" title="Start"><i class="ace-icon fa fa-stop bigger-130"></i></a>
+                    </div>
+                </td>
                 <td>@item.Online</td>
                 <td>@Html.DisplayFor(m => item.ClientGuid)</td>
                 <td>@Html.DisplayFor(m => item.Status)</td>
@@ -124,5 +132,11 @@ else
     function onSuccess(result) {
         $('#AddClientModal').modal('hide');
         window.location.reload();
+    }
+
+    function Operation(targetId, action) {
+        $.post(
+            "@Url.Action("ClientAction")", { TargetGuid: targetId, Action: action }
+        );
     }
 </script>
