@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace DataModelStandard.MessageModel
 {
+
     public class WorkFlow
     {
         /// <summary>
         /// 时序命令
         /// </summary>
+
         public List<Flow> TimingCommand { get; set; }
 
         /// <summary>
         /// 重复命令
         /// </summary>
+
         public List<Flow> RepeatCommand { get; set; }
 
         public WorkFlow()
@@ -53,14 +57,17 @@ namespace DataModelStandard.MessageModel
         /// <summary>
         /// 序号
         /// </summary>
+
         public int Index { get; set; }
         /// <summary>
         /// 事件间隔,轮询指令此位无意义
         /// </summary>
+
         public TimeSpan TimeSpan { get; set; }
         /// <summary>
         /// 指令格式
         /// </summary>
+
         public byte[] Command { get; set; }
 
         public Flow() { }

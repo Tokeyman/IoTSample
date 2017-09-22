@@ -15,7 +15,7 @@ namespace MarkDbModel.Entity
 
         public string TargetGuid { get; set; }
         public string Action { get; set; }
-
+        public Operation() { }
         public Operation(string TargetGuid,string Action)
         {
             this.TargetGuid = TargetGuid;

@@ -7,9 +7,10 @@ using System.Data.Entity;
 using XField.Models;
 
 namespace XField
-{
+{/*
     class Program
     {
+        
         //EF test
         static void Main(string[] args)
         {
@@ -60,5 +61,5 @@ namespace XField
             Console.WriteLine("Done");
             Console.ReadLine();
         }
-    }
+}*/
 }
