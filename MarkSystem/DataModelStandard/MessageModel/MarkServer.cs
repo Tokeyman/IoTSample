@@ -6,20 +6,20 @@ using System.Linq;
 
 namespace DataModelStandard.MessageModel
 {
-    public class ClientConnectItem
+    public class ConnectedClient
     {
         public string Ip { get; set; }
         public int Port { get; set; }
-        public ClientConnectItem() { }
-        public ClientConnectItem(string Ip, int Port) { this.Ip = Ip; this.Port = Port; }
+        public ConnectedClient() { }
+        public ConnectedClient(string Ip, int Port) { this.Ip = Ip; this.Port = Port; }
     }
-    public class ClientRegisterItem
+    public class RegisterdClient
     {
         public string Guid { get; set; }
         public string Ip { get; set; }
         public int Port { get; set; }
-        public ClientRegisterItem() { }
-        public ClientRegisterItem(string Guid, string Ip, int Port) { this.Guid = Guid; this.Ip = Ip; this.Port = Port; }
+        public RegisterdClient() { }
+        public RegisterdClient(string Guid, string Ip, int Port) { this.Guid = Guid; this.Ip = Ip; this.Port = Port; }
     }
 
     public class MarkServer
@@ -27,15 +27,15 @@ namespace DataModelStandard.MessageModel
         public string Guid { get; private set; }
         public string Name { get; private set; }
 
-        public List<ClientConnectItem> ConnectedList { get; private set; }
-        public List<ClientRegisterItem> ClientList { get; private set; }
+        public List<ConnectedClient> ConnectedList { get; private set; }
+        public List<RegisterdClient> ClientList { get; private set; }
 
         public MarkServer(string Guid, string Name)
         {
             this.Guid = Guid;
             this.Name = Name;
-            ConnectedList = new List<ClientConnectItem>();
-            ClientList = new List<ClientRegisterItem>();
+            ConnectedList = new List<ConnectedClient>();
+            ClientList = new List<RegisterdClient>();
         }
 
 
@@ -48,7 +48,7 @@ namespace DataModelStandard.MessageModel
         public void ClientConnect(string Ip, int Port)
         {
             var c = ConnectedList.FirstOrDefault(f => f.Ip == Ip && f.Port == Port);
-            if (c == null) ConnectedList.Add(new ClientConnectItem(Ip, Port));
+            if (c == null) ConnectedList.Add(new ConnectedClient(Ip, Port));
             RaiseClientConnected(Ip, Port);
         }
 
@@ -80,7 +80,7 @@ namespace DataModelStandard.MessageModel
             if (cmd == ActionType.Register)
             {
                 var c = ClientList.FirstOrDefault(f => f.Guid == guid);
-                if (c == null) ClientList.Add(new ClientRegisterItem(guid,Ip,Port));
+                if (c == null) ClientList.Add(new RegisterdClient(guid,Ip,Port));
                 RaiseClientRegisterd(guid, Ip, Port);
             }
             else

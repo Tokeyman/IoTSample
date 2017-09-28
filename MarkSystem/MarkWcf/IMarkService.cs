@@ -48,8 +48,13 @@ namespace MarkWcf
         /// </summary>
         /// <param name="Buffer"></param>
         [OperationContract]
-        void Push(string ClientGuid,byte[] Buffer,string Status);
+        void Push(string ClientGuid, byte[] Buffer, string Status);
 
+        /// <summary>
+        /// 从数据库获取工作编程信息
+        /// </summary>
+        /// <param name="Guid"></param>
+        /// <returns></returns>
         [OperationContract]
         WorkFlow Pull(string Guid);
 
@@ -89,5 +94,27 @@ namespace MarkWcf
         public string TargetGuid { get; set; }
         [DataMember]
         public string Action { get; set; }
+    }
+
+    [DataContract]
+    public class ConnectedClient
+    {
+        [DataMember]
+        public string Ip { get; set; }
+        [DataMember]
+        public int Port { get; set; }
+    }
+
+    [DataContract]
+    public class RegisteredClient //TODO
+    {
+        [DataMember]
+        public string Guid { get; set; }
+
+        [DataMember]
+        public string Ip { get; set; }
+
+        [DataMember]
+        public int Port { get; set; }
     }
 }
