@@ -26,7 +26,7 @@ namespace ConsoleClientTest
 
             string cmd = Console.ReadLine();
 
-            Client = new MarkClinet("0001");
+            Client = new MarkClinet("0012");
             Client.SendToServer += Client_SendToServer;
             Client.SendToUart += Client_UartSend;
 

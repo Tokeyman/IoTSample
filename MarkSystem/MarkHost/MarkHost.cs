@@ -91,6 +91,7 @@ namespace MarkHost
         {
             var client = RegisterdClients.FirstOrDefault(f => f.Ip == e.Ip && f.Port == e.Port && f.Guid == e.Guid);
             if (client == null) RegisterdClients.Add(new RegisterdClient(e.Guid, e.Ip, e.Port));
+            service.Register(e.Guid, e.Ip, e.Port);
         }
 
         private void Server_ClientClosed(object sender, ClientClosedArgs e)
@@ -99,11 +100,12 @@ namespace MarkHost
             if (c != null) ConnectedClients.Remove(c);
             var cc = RegisterdClients.FirstOrDefault(f => f.Ip == e.Ip && f.Port == e.Port);
             if (cc != null) RegisterdClients.Remove(cc);
+            service.Close(e.Ip, e.Port);
         }
 
         private void Server_SendToClient(object sender, ServerSocketSendArgs e)
         {
-            if(Socket!=null)
+            if (Socket != null)
             {
                 //序列化内容
                 var json = JsonConvert.SerializeObject(e.Message, jSetting);
@@ -117,15 +119,52 @@ namespace MarkHost
         {
             var senderGuid = (string)e.Message[PropertyString.SenderGuid];
             var action = (string)e.Message[PropertyString.Action];
-            //TODO 处理数据库Register Push Pull Close 请求 
+            //TODO 处理数据库Push Pull 请求 
             //调用IServerService
-           
+            if (action == ActionType.Pull)
+            {
+                var workFlow = service.Pull(senderGuid);
+                var message = new MarkMessage();
+                message[PropertyString.TargetGuid] = senderGuid;
+                message[PropertyString.WorkFlow] = workFlow;
+                message[PropertyString.Action] = ActionType.Update;
+                Server.Process(message);
+            }
+            else if (action == ActionType.Push)
+            {
+                var buffer = Transform.StringToBytes((string)e.Message[PropertyString.Data]);
+                var status = (string)e.Message[PropertyString.Status];
+                service.Push(senderGuid, buffer, status);
+            }
         }
 
         private void ReadTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             //TODO DequeueAction
-            throw new NotImplementedException();
+            var oa = service.DequeueOperation();
+            if (oa != null)
+            {
+
+
+                MarkMessage message;
+                switch (oa.Action)
+                {
+                    case ActionType.Start: message = new MarkMessage(null, null, ActionType.Start) { { PropertyString.TargetGuid, oa.TargetGuid } }; break;
+                    case ActionType.Stop: message = new MarkMessage(null, null, ActionType.Stop) { { PropertyString.TargetGuid, oa.TargetGuid } }; break;
+                    case ActionType.Pause: message = new MarkMessage(null, null, ActionType.Pause) { { PropertyString.TargetGuid, oa.TargetGuid } }; break;
+                    case ActionType.Resume: message = new MarkMessage(null, null, ActionType.Resume) { { PropertyString.TargetGuid, oa.TargetGuid } }; break;
+                    case ActionType.Update:
+                        var workFlow = service.Pull(oa.TargetGuid);
+                        message = new MarkMessage();
+                        message[PropertyString.TargetGuid] = oa.TargetGuid;
+                        message[PropertyString.WorkFlow] = workFlow;
+                        message[PropertyString.Action] = ActionType.Update;
+                        break;
+                    default:
+                        message = null; break;
+                }
+                if (message != null) Server.Process(message);
+            }
         }
 
         private void Socket_DataReceived(object sender, TcpServerDataReceivedArgs e)
@@ -146,7 +185,7 @@ namespace MarkHost
         }
 
 
-        #region 数据库操作
+        #region GUI
 
         #endregion
     }
