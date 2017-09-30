@@ -176,17 +176,32 @@ namespace GLibrary.Windows.Net
             ServerDataState dataState = (ServerDataState)iar.AsyncState;
             if ((dataState.Client == null) || (!dataState.Client.Connected)) return;
             NetworkStream ns = dataState.Client.GetStream();
-            int NumOfBytesRead = ns.EndRead(iar);
-            if (NumOfBytesRead > 0) //接收到数据
+            try
             {
-                byte[] buffer = new byte[NumOfBytesRead];
-                Array.Copy(dataState.ReceivedBuffer, buffer, NumOfBytesRead);
-                //TcpServerState state = new TcpServerState(dataState.Listener, new TcpClient(dataState.Client), NumOfBytesRead, buffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
-                //RaiseDataReceived(state);
-                RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, buffer);
-                ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(ServerDataReceivedCallBack), dataState);
+                int NumOfBytesRead = ns.EndRead(iar);
+                if (NumOfBytesRead > 0) //接收到数据
+                {
+                    byte[] buffer = new byte[NumOfBytesRead];
+                    Array.Copy(dataState.ReceivedBuffer, buffer, NumOfBytesRead);
+                    //TcpServerState state = new TcpServerState(dataState.Listener, new TcpClient(dataState.Client), NumOfBytesRead, buffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
+                    //RaiseDataReceived(state);
+                    RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, buffer);
+                    ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(ServerDataReceivedCallBack), dataState);
+                }
+                else  //客户端断开连接
+                {
+                    TcpClient client = new TcpClient(dataState.Client);
+                    ClientList.Remove(ClientList.First(s => s.RemoteAddress == client.RemoteAddress && s.RemotePort == client.RemotePort));
+                    //TcpServerState state = new TcpServerState(dataState.Listener, new TcpClient(dataState.Client), 0, new byte[0], (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
+                    //RaiseClientDisconnected(state);
+                    RaiseClientDisconnected((IPEndPoint)dataState.Client.Client.RemoteEndPoint);
+                    ns.Close();
+                    dataState.Client.Close();
+                    ns = null;
+                    dataState = null;
+                }
             }
-            else  //客户端断开连接
+            catch (Exception ex)
             {
                 TcpClient client = new TcpClient(dataState.Client);
                 ClientList.Remove(ClientList.First(s => s.RemoteAddress == client.RemoteAddress && s.RemotePort == client.RemotePort));
@@ -198,6 +213,7 @@ namespace GLibrary.Windows.Net
                 ns = null;
                 dataState = null;
             }
+            
         }
         #endregion
 

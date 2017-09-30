@@ -14,6 +14,11 @@ namespace ConsoleClientTest
     {
         private static MarkClinet Client;
         private static TcpClient Socket;
+        private static JsonSerializerSettings jSettings = new JsonSerializerSettings()
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
+
         static void Main(string[] args)
         {
             IPAddress.TryParse("127.0.0.1", out IPAddress remoteHost);
@@ -21,16 +26,12 @@ namespace ConsoleClientTest
             Socket = new TcpClient(remoteHost, 21890);
 
             Socket.DataReceived += Socket_DataReceived;
-
+            Socket.OnException += Socket_OnException;
+            Socket.Connected += Socket_Connected;
+            Socket.Disconected += Socket_Disconected;
             Socket.Connect();
 
             string cmd = Console.ReadLine();
-
-            Client = new MarkClinet("0012");
-            Client.SendToServer += Client_SendToServer;
-            Client.SendToUart += Client_UartSend;
-
-
 
             while (cmd != "quit")
             {
@@ -45,13 +46,45 @@ namespace ConsoleClientTest
                 cmd = Console.ReadLine();
             }
 
-
             Socket.Dispose();
         }
-        private static JsonSerializerSettings jSettings = new JsonSerializerSettings()
+
+        private static void Socket_Disconected(object sender, EventArgs e)
         {
-            TypeNameHandling = TypeNameHandling.All
-        };
+            Client.Dispose();
+            Console.WriteLine("Socket Disonnected");
+            Console.WriteLine("Reconnecting in 5 seconds");
+            ReconnectTimer = new System.Timers.Timer(5000);
+            ReconnectTimer.AutoReset = false;
+            ReconnectTimer.Elapsed += ReconnectTimer_Elapsed;
+            ReconnectTimer.Start();
+        }
+
+        private static void Socket_Connected(object sender, EventArgs e)
+        {
+            Console.WriteLine("Socket Connected");
+            Client = new MarkClinet("0012");
+            Client.SendToServer += Client_SendToServer;
+            Client.SendToUart += Client_UartSend;
+            Client.Go();
+        }
+
+        private static System.Timers.Timer ReconnectTimer;
+
+        private static void Socket_OnException(object sender, GLibrary.Windows.ExceptionArgs e)
+        {
+            Console.WriteLine("Socket error.");
+            Console.WriteLine("Reconnecting in 5 seconds");
+            ReconnectTimer = new System.Timers.Timer(5000);
+            ReconnectTimer.AutoReset = false;
+            ReconnectTimer.Elapsed += ReconnectTimer_Elapsed;
+            ReconnectTimer.Start();
+        }
+
+        private static void ReconnectTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Socket.Connect();
+        }
 
         private static void Client_UartSend(object sender, ClientSendToUartArgs e)
         {
@@ -67,25 +100,28 @@ namespace ConsoleClientTest
 
         private static void Client_SendToServer(object sender, ClientSendToServerArgs e)
         {
-            
-            var message = JsonConvert.SerializeObject(e.Message,jSettings);
+            var message = JsonConvert.SerializeObject(e.Message, jSettings);
             var buffer = System.Text.Encoding.UTF8.GetBytes(message);
-            Socket.Send(buffer);
+            if (Socket.IsRunning) Socket.Send(DataConverter.Pack(buffer));
         }
 
 
         private static void Socket_DataReceived(object sender, TcpClientDataReceivedArgs e)
         {
-            var json = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
-            //Console.WriteLine("Data Received:" + message);
-
-            var message = JsonConvert.DeserializeObject<MarkMessage>(json,jSettings);
-            Client.Process(message);
-            if ((string)message[PropertyString.Action] == ActionType.Update)
+            var data = DataConverter.Unpack(e.ReceivedBuffer);
+            foreach (var item in data)
             {
-                //Client.Update(messageFlow);
-                Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());
-                Console.WriteLine("RepeatCommand Count:" + Client.WorkFlow.RepeatCommand.Count.ToString());
+                var json = System.Text.Encoding.UTF8.GetString(item);
+                //Console.WriteLine("Data Received:" + message);
+
+                var message = JsonConvert.DeserializeObject<MarkMessage>(json, jSettings);
+                Client.Process(message);
+                if ((string)message[PropertyString.Action] == ActionType.Update)
+                {
+                    //Client.Update(messageFlow);
+                    Console.WriteLine("TimingCommand Count:" + Client.WorkFlow.TimingCommand.Count.ToString());
+                    Console.WriteLine("RepeatCommand Count:" + Client.WorkFlow.RepeatCommand.Count.ToString());
+                }
             }
         }
     }

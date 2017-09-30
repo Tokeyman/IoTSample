@@ -8,6 +8,7 @@ using DataModelStandard;
 
 namespace XField
 {
+    /*
     class Program
     {
         static void Main(string[] args)
@@ -17,4 +18,5 @@ namespace XField
             Console.ReadLine();
         }
     }
+    */
 }

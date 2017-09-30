@@ -82,6 +82,7 @@
     <Compile Include="ViewModel\ClientItem.cs" />
     <Compile Include="ViewModel\ComboBoxItem.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\MarkMonitorViewModel.cs" />
     <Compile Include="ViewModel\MarkServerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\MarkServerWindow.xaml.cs">

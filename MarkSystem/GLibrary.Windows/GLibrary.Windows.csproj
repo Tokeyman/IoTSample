@@ -51,5 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transform.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

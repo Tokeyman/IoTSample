@@ -46,6 +46,7 @@ namespace MarkServer.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<MarkServerViewModel>();
+            SimpleIoc.Default.Register<MarkMonitorViewModel>();
         }
 
         public MainViewModel Main
@@ -57,6 +58,8 @@ namespace MarkServer.ViewModel
         }
 
         public MarkServerViewModel Mark => ServiceLocator.Current.GetInstance<MarkServerViewModel>();
+
+        public MarkMonitorViewModel Monitor => ServiceLocator.Current.GetInstance<MarkMonitorViewModel>();
 
         
         public static void Cleanup()

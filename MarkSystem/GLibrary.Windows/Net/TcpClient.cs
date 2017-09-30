@@ -138,11 +138,18 @@ namespace GLibrary.Windows.Net
         {
             if (IsRunning)
             {
-                NetworkStream ns = tcpClient.GetStream();
-                if (ns.CanWrite)
+                try
                 {
-                    ns.BeginWrite(buffer, 0, buffer.Length, new AsyncCallback(StreamWriteCallBack), ns);
+                    NetworkStream ns = tcpClient.GetStream();
+                    if (ns.CanWrite)
+                    {
+                        ns.BeginWrite(buffer, 0, buffer.Length, new AsyncCallback(StreamWriteCallBack), ns);
+                    }
                 }
+                catch (Exception ex)
+                {
+                }
+               
             }
         }
         #endregion
@@ -188,21 +195,30 @@ namespace GLibrary.Windows.Net
             if ((dataState.Client == null) || (!dataState.Client.Connected)) return;
             int NumOfBytesRead;
             NetworkStream ns = dataState.Client.GetStream();
-            NumOfBytesRead = ns.EndRead(iar);
-            if (NumOfBytesRead > 0)  //读取到数据
+            try
             {
-                byte[] buffer = new byte[NumOfBytesRead];
-                Array.Copy(dataState.ReceivedBuffer, 0, buffer, 0, NumOfBytesRead);
-                // TcpClientState state = new TcpClientState(dataState.Client, NumOfBytesRead, dataState.ReceivedBuffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
-                // RaiseDataReceived(state);
-                RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, buffer);
-                ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(AsyncReadCallBack), dataState);
+                NumOfBytesRead = ns.EndRead(iar);
+                if (NumOfBytesRead > 0)  //读取到数据
+                {
+                    byte[] buffer = new byte[NumOfBytesRead];
+                    Array.Copy(dataState.ReceivedBuffer, 0, buffer, 0, NumOfBytesRead);
+                    // TcpClientState state = new TcpClientState(dataState.Client, NumOfBytesRead, dataState.ReceivedBuffer, (IPEndPoint)dataState.Client.Client.RemoteEndPoint);
+                    // RaiseDataReceived(state);
+                    RaiseDataReceived((IPEndPoint)dataState.Client.Client.RemoteEndPoint, buffer);
+                    ns.BeginRead(dataState.ReceivedBuffer, 0, dataState.Client.ReceiveBufferSize, new AsyncCallback(AsyncReadCallBack), dataState);
+                }
+                else  //连接被服务端断开
+                {
+                    IsRunning = false;
+                    RaiseDisconnected();
+                }
             }
-            else  //连接被服务端断开
+            catch (Exception ex)
             {
                 IsRunning = false;
                 RaiseDisconnected();
             }
+           
         }
 
         private void StreamWriteCallBack(IAsyncResult iar)
