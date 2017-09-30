@@ -7,51 +7,9 @@
     <a class="btn btn-sm btn-primary" onclick="CreateClient(); return false;" href="#" title="添加"><i class="icon-only ace-icon fa fa-plus bigger-110"></i></a>
 </p>
 
-@if (Model.Any())
-{
-    <table class="table table-hover table-striped">
-        <tr>
-            <th>Action</th>
-            <th>Online</th>
-            <th>Guid</th>
-            <th>Status</th>
-            <th>Command Group</th>
-            <th>IP</th>
-            <th>Port</th>
-            <th></th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <div class="action-buttons">
-                        <a class="green" onclick="javascript: Operation('@item.ClientGuid', '@((item.Status=="Pause")?"Resume":"Start")'); return false;" href="#" title="Start"><i class="ace-icon fa fa-play bigger-130"></i></a>
-                        <a class="orange" onclick="javascript:Operation('@item.ClientGuid','Pause');return false;" href="#" title="Start"><i class="ace-icon fa fa-pause bigger-130"></i></a>
-                        <a class="red"  onclick="javascript:Operation('@item.ClientGuid','Stop');return false;" href="#" title="Start"><i class="ace-icon fa fa-stop bigger-130"></i></a>
-                    </div>
-                </td>
-                <td>@item.Online</td>
-                <td>@Html.DisplayFor(m => item.ClientGuid)</td>
-                <td>@Html.DisplayFor(m => item.Status)</td>
-                <td>
-                    @((item.CommandGroup==null)?"Null":item.CommandGroup.Description)
-                </td>
-                <td>@Html.DisplayFor(m => item.Ip)</td>
-                <td>@Html.DisplayFor(m => item.Port)</td>
-                <td>
-                    <div class="action-buttons">
-                        <a class="green" href="@Url.Action("EditClient","Home",new {Id=item.Id})" title="Edit"><i class="ace-icon fa fa-pencil bigger-130"></i></a>
-                        <a class="red" onclick="javascrpt: RemoveClient('@item.Id','@item.ClientGuid'); return false;" href="#" title="Delete"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>
-                    </div>
-                </td>
-            </tr>
-        }
-    </table>
-}
-else
-{
-    <h3>无内容</h3>
-}
+
+<div id="ClientList"></div>
+
 
 <div class="modal fade" tabindex="-1" id="AddClientModal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -60,7 +18,7 @@ else
             {
                 HttpMethod = "POST",
                 OnSuccess = "onSuccess"
-            }, new { @class = "form-horizontal", role = "form"}))
+            }, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken();
 
@@ -138,5 +96,13 @@ else
         $.post(
             "@Url.Action("ClientAction")", { TargetGuid: targetId, Action: action }
         );
+    }
+
+    setInterval("Refresh()", 1000);
+
+    function Refresh() {
+        $.post('/Home/GetClientList/').done(function (data) {
+            $('#ClientList').html(data);
+        });
     }
 </script>

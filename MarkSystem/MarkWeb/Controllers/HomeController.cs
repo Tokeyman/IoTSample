@@ -22,6 +22,13 @@ namespace MarkWeb.Controllers
         }
 
         [HttpPost]
+        public ActionResult GetClientList()
+        {
+            var models = db.MarkClient.OrderBy(o=>o.ClientGuid).ToList();
+            return PartialView("MarkClientList", models);
+        }
+
+        [HttpPost]
         public async Task<ActionResult> CreateClient(string CreateGuid, string CreateDescription)
         {
             if (string.IsNullOrWhiteSpace(CreateGuid)) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
