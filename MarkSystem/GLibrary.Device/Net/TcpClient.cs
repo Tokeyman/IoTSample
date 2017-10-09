@@ -132,7 +132,7 @@ namespace GLibrary.Device.Net
                     this.IsRunning = false;
                     RaiseDisconnected(RemoteHost, RemotePort.ToString());
                     RaiseOnException(this, ex);
-                    Dispose();
+                    //Dispose();
                     return;
                 }
 
@@ -149,8 +149,8 @@ namespace GLibrary.Device.Net
                         //taskLoad.AsTask().Wait();
                         //bytesRead = taskLoad.GetResults();
                         /////////////////////////////////////////////
-                        var iar = DataReader.LoadAsync(1023).AsTask();
-                        iar.Wait();
+                        //var iar = DataReader.LoadAsync(1023).AsTask();
+                        //iar.Wait();
                         
                        
                         if (bytesRead > 0)
@@ -163,7 +163,7 @@ namespace GLibrary.Device.Net
                         {
                             DataReader.DetachStream();
                             RaiseDisconnected(RemoteHost, RemotePort.ToString());
-                            Dispose();
+                            //Dispose();
                             return;
                         }
                     }
@@ -180,7 +180,7 @@ namespace GLibrary.Device.Net
                 }
                 finally
                 {
-                    Dispose();
+                   // Dispose();
                 }
 
             }

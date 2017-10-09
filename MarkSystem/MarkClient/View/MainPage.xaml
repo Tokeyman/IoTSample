@@ -13,9 +13,17 @@
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock Text="{x:Bind Model.Copyright}" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind Model.Github}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Model.TimingCount,Mode=OneWay}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Model.RepeatCount,Mode=OneWay}" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+            <TextBlock Text="{x:Bind Model.InfoMessage,Mode=OneWay}"/>
         </StackPanel>
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <TextBlock Text="{x:Bind Model.Power}"/>
+            <TextBlock Text="{x:Bind Model.Power}" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Button Content="Go" Command="{x:Bind Model.GoCommand}" Height="76" Width="204"/>
         </StackPanel>
     </Grid>
 </Page>
