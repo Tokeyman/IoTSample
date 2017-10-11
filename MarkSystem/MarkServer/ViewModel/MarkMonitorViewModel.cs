@@ -14,6 +14,7 @@ using System.Net;
 using DataModelStandard.MessageModel;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace MarkServer.ViewModel
 {
@@ -28,20 +29,30 @@ namespace MarkServer.ViewModel
         private JsonSerializerSettings jSetting = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All };
         private Timer GeneralTimer;
         private UdpClient Socket;
+
+        private string _ServerIp="192.168.0.5";
+        public string ServerIp { get { return _ServerIp; } set { Set(ref _ServerIp, value); } }
+
+
         public MarkMonitorViewModel()
         {
             if (IsInDesignMode) { }
-            else
-            {
-                Socket = new UdpClient(IPAddress.Parse("127.0.0.1"), 8896);
-                Socket.DataReceived += Socket_DataReceived;
-                Socket.Connect();
 
-                GeneralTimer = new Timer(2000);
-                GeneralTimer.AutoReset = true;
-                GeneralTimer.Elapsed += GeneralTimer_Elapsed;
-                GeneralTimer.Start();
-            }
+            GoCommand = new RelayCommand(Go);
+        }
+
+        public ICommand GoCommand { get; set; }
+
+        private void Go()
+        {
+            Socket = new UdpClient(IPAddress.Parse(ServerIp), 8896);
+            Socket.DataReceived += Socket_DataReceived;
+            Socket.Connect();
+
+            GeneralTimer = new Timer(2000);
+            GeneralTimer.AutoReset = true;
+            GeneralTimer.Elapsed += GeneralTimer_Elapsed;
+            GeneralTimer.Start();
         }
 
         private void Socket_DataReceived(object sender, UdpClientDataReceivedArgs e)

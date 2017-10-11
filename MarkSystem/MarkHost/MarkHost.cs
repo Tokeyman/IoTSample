@@ -44,6 +44,12 @@ namespace MarkHost
         private Timer ReadTimer;
 
 
+        #region GUI
+        private UdpServer GuiSocket = new UdpServer(8896);
+
+        #endregion Gui
+
+
         protected override void OnStart(string[] args)
         {
             //WCF
@@ -70,8 +76,12 @@ namespace MarkHost
             ReadTimer.AutoReset = true;
             ReadTimer.Elapsed += ReadTimer_Elapsed;
             ReadTimer.Start();
-        }
 
+            #region Gui
+            GuiSocket.DataReceived += GuiSocket_DataReceived;
+            GuiSocket.Start();
+            #endregion  Gui
+        }
 
 
         protected override void OnStop()
@@ -111,7 +121,7 @@ namespace MarkHost
                 var json = JsonConvert.SerializeObject(e.Message, jSetting);
                 var buffer = System.Text.Encoding.UTF8.GetBytes(json);
                 IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(e.RemoteIp), e.RemotePort);
-                Socket.Send(buffer, iPEndPoint);
+                Socket.Send(DataConverter.Pack(buffer), iPEndPoint);
             }
         }
 
@@ -169,9 +179,13 @@ namespace MarkHost
 
         private void Socket_DataReceived(object sender, TcpServerDataReceivedArgs e)
         {
-            var json = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
-            var model = JsonConvert.DeserializeObject<MarkMessage>(json, jSetting);
-            Server.Upload(e.RemoteHost.ToString(), e.RemotePort, model);
+            var data = DataConverter.Unpack(e.ReceivedBuffer);
+            foreach (var item in data)
+            {
+                var json = System.Text.Encoding.UTF8.GetString(item);
+                var model = JsonConvert.DeserializeObject<MarkMessage>(json, jSetting);
+                Server.Upload(e.RemoteHost.ToString(), e.RemotePort, model);
+            }
         }
 
         private void Socket_ClientDisconnected(object sender, TcpServerClientDisconnectdArgs e)
@@ -184,10 +198,26 @@ namespace MarkHost
             Server.ClientConnect(e.RemoteHost.ToString(), e.RemotePort);
         }
 
+        #region Gui
+        private void GuiSocket_DataReceived(object sender, UdpServerDataReceivedArgs e)
+        {
+            var json = System.Text.Encoding.UTF8.GetString(e.ReceivedBuffer);
+            var model = JsonConvert.DeserializeObject<MarkMessage>(json, jSetting);
 
-        #region GUI
+            string cmd = (string)model[PropertyString.Action];
+            var message = new MarkMessage();
+            if (cmd == "GetClients")
+            {
+                message[PropertyString.Action] = "GetClients";
+                message.Add("ConnectedClients", ConnectedClients);
+                message.Add("RegisterdClients", RegisterdClients);
 
-        #endregion
+                var messageJson = JsonConvert.SerializeObject(message, jSetting);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(messageJson);
+                GuiSocket.Send(buffer, new IPEndPoint(e.RemoteHost, e.RemotePort));
+            }
+        }
+        #endregion Gui
     }
 
 }

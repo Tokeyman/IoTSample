@@ -71,8 +71,6 @@ namespace MarkClient.ViewModel
             Socket.Connect();
         }
 
-
-
         private DispatcherTimer ReconnectTimer;
 
         private void Socket_Disconnected(TcpClient sender, TcpClientConnectionStateArgs args)
@@ -103,10 +101,9 @@ namespace MarkClient.ViewModel
             ReconnectTimer.Stop();
         }
 
-
-
         private void Socket_Connected(TcpClient sender, TcpClientConnectionStateArgs args)
         {
+            //TODO: Test RPi3b need to uncomment next two lines.
             //Sp = new SerialPort("UART0", 115200);
             //Sp.DataReceived += Sp_DataReceived;
 
@@ -116,8 +113,6 @@ namespace MarkClient.ViewModel
             Client.SendToUart += Client_SendToUart;
             Client.Go();
         }
-
-
 
         private void Client_SendToUart(object sender, ClientSendToUartArgs e)
         {
